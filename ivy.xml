@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<ivy-module version="2.0">
+    <info organisation="com.procippus" module="IvyFacade"/>
+     <publications>
+    	<artifact name="IvyHTMLBuilder" />
+    </publications>
+    <dependencies>
+    	<dependency org="nu" name="xom" rev="1.2.6"  />
+    	<dependency org="org.apache" name="ant" rev="1.8.2"  />
+    	<dependency org="org.eclipse" name="jdt.internal.jarinjarloader" rev="1.3.0" />
+    </dependencies>
+</ivy-module>

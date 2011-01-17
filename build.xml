@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<project name="IvyFacade" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <echo message="${ant.home}"/>
+    <property file="build.properties"/>
+
+    <path id="libraries">
+        <fileset dir="${ivy.lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="resolve">
+        <ivy:configure/>
+        <ivy:resolve file="${ivy.dep.file}" conf="${ivy.configurations}"/>
+        <ivy:retrieve pattern="${ivy.retrieve.pattern}" conf="${ivy.configurations}"/>
+    </target>
+
+    <target name="clean">
+    	<delete dir="${ivy.lib.dir}" failonerror="false" />
+        <delete dir="${build.dir}" failonerror="false"/>
+    	<mkdir dir="${ivy.lib.dir}" />
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${compile.target}"/>
+        <mkdir dir="${dist.dir}" />
+    </target>
+
+    <target name="compile" depends="clean,resolve">
+        <javac classpathref="libraries"
+               srcdir="${src.dir}:${resources.dir}"
+               destdir="${compile.target}"
+               fork="true"
+               includeantruntime="false"
+               source="1.6"/>
+        <copydir src="${resources.dir}" dest="${compile.target}" />
+    </target>
+
+    <target name="dist" depends="compile">
+    	<buildnumber file="ivyfacade.number" />
+    	
+        <jar destfile="${dist.dir}/IvyFacade-1.0.${build.number}.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="com.procippus.ivy.HtmlBuilder"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar"/>
+            </manifest>
+            <zipfileset src="${ivy.lib.dir}/jar-in-jar-loader-1.3.0.zip"/>
+            <fileset dir="${compile.target}"/>
+            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar"/>
+        </jar>
+
+        <jar destfile="${dist.dir}/IvyFacade-1.0.${build.number}-sources.jar">
+            <fileset dir="${resources.dir}" />
+            <fileset dir="${src.dir}" />
+        </jar>
+    </target>
+
+</project>
