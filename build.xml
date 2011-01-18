@@ -34,6 +34,8 @@
         <copydir src="${resources.dir}" dest="${compile.target}" />
     </target>
 
+	<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload"/>
+	
     <target name="dist" depends="compile">
     	<buildnumber file="ivyfacade.number" />
     	
@@ -53,6 +55,17 @@
             <fileset dir="${resources.dir}" />
             <fileset dir="${src.dir}" />
         </jar>
+    	
+    	<gcupload 
+    	        username="${gc.username}" 
+    	        password="${gc.password}" 
+    	        projectname="ivy-facade" 
+    	        filename="${dist.dir}/IvyFacade-1.0.${build.number}.jar" 
+    	        targetfilename="IvyFacade-1.0.${build.number}.jar"
+    	        summary="Version 1.0.${build.number} of Ivy Facade"
+    	        labels="Featured, Type-Package, OpSys-All" />
+    	
+    	
     </target>
 
 </project>
