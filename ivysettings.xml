@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+	<settings defaultResolver="myChain" />
+	<property name="loc.server" value="http://localhost/ivy/" />
+	<property name="ivy.local.default.ivy.pattern" value="[organisation]/[module]/[revision]/ivy.xml" override="false" />
+	<property name="ivy.local.default.artifact.pattern"	value="[organisation]/[module]/[revision]/[artifact].[ext]" override="false" />
+	<resolvers>
+		<url name="intranet">
+			<ivy pattern="${loc.server}${ivy.local.default.ivy.pattern}" />
+			<artifact pattern="${loc.server}${ivy.local.default.artifact.pattern}" />
+		</url>
+		<filesystem name="local">
+			<ivy pattern="/Library/WebServer/Documents/ivy/${ivy.local.default.ivy.pattern}" />
+            <artifact pattern="/Library/WebServer/Documents/ivy-local/${ivy.local.default.artifact.pattern}" />
+		</filesystem>
+		<chain name="myChain" returnFirst="true">
+			<resolver ref="local" />
+			<resolver ref="intranet" />
+		</chain>
+	</resolvers>
+</ivysettings>
