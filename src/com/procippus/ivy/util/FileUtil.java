@@ -33,6 +33,7 @@ public class FileUtil {
 	
 	private static String[] ignoreFiles = null;
 	private static String ivyMatchPattern = null;
+	private static String ignoreDirectory = null;
 	
 	public static File ivyStylesheet;
 	public static File dirStylesheet;
@@ -41,6 +42,7 @@ public class FileUtil {
 	
 	private static final String COMMA = ",";
 	public static void init() {
+		ignoreDirectory = PropertiesUtil.getValue("files.ignore.directory");
 		ignoreFiles = PropertiesUtil.getValue(PropertiesUtil.KEY_FIL_IGNORE).split(COMMA);
 		ivyMatchPattern = PropertiesUtil.getValue(PropertiesUtil.KEY_IVY_PATTERNS);
 		
@@ -65,11 +67,13 @@ public class FileUtil {
 		} else {
 			List<File> directories = new ArrayList<File>();
 			Boolean hasFiles = Boolean.FALSE;
+			
 			if (directory.isDirectory()) {
 				File[] files = directory.listFiles();
 				for (File f : files) {
 					if (f.isDirectory()) {
-						directories.add(f);
+						if (ignoreDirectory.indexOf(f.getName()) < 0)
+							directories.add(f);
 					} else {
 						Boolean ignore = Boolean.FALSE;
 						for (String i : ignoreFiles) {

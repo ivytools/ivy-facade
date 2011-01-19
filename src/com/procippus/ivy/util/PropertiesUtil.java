@@ -38,6 +38,7 @@ public class PropertiesUtil {
 	
 	public static void setUserProperties(String userPropertiesPath) {
 		if (userPropertiesPath != null && userPropertiesPath.trim().length() > 0) {
+			System.out.println("Getting Property from user defined properties: " + userPropertiesPath);
 			File userPropertiesFile = new File(userPropertiesPath);
 			if (userPropertiesFile.exists() && userPropertiesFile.isFile() && userPropertiesFile.canRead()) {
 				FileInputStream fis;

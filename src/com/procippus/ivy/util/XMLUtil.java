@@ -55,6 +55,7 @@ public class XMLUtil {
 					}
 				}
 				transform.setParameter("timestamp", sdf.format(processTime));
+				transform.setParameter("assetRoot", PropertiesUtil.getValue("assets.root.absolute.url"));
 				transform.setParameter("imageExtension", PropertiesUtil.getValue("graphics.extension"));
 				Nodes output = transform.transform(xml);
 				result = XSLTransform.toDocument(output);

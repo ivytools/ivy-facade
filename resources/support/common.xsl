@@ -16,35 +16,18 @@ limitations under the License.
 	<xsl:output method="html" />
 	
 	<xsl:param name="timestamp" />
+	<xsl:param name="assetRoot" />
 
 	<xsl:template name="header">
 		<xsl:text>
-		<script type="text/javascript" src="/assets/js/jquery-1.4.2.min.js">
+		<script type="text/javascript" src="{$assetRoot}/assets/js/ivy-facade-main.js">
 			<xsl:comment>js include</xsl:comment>	
 		</script>
-		<script type="text/javascript" src="/assets/js/jquery-ui-1.8.6.custom.min.js">
+		<script type="text/javascript" src="{$assetRoot}/assets/js/ivy-facade-main-ui.js">
 			<xsl:comment>js include</xsl:comment>
 		</script>
-		<link type="text/css" href="/assets/css/cupertino/jquery-ui-1.8.6.custom.css" rel="stylesheet" />
-		<style type="text/css">
-			body{ font: 72.5% "Trebuchet MS", sans-serif; margin-left: 50px; margin-right: 50px; margin-top:
-			10px; }
-			li { margin-bottom: 3px; }
+		<link type="text/css" href="{$assetRoot}/assets/css/ivy-facade-main.css" rel="stylesheet" />
 
-			.content { margin-left: 5px; margin-right: 5px; }
-			.title { font-size: 1.6em; margin-bottom: 5px; }
-			.subtitle { font-size: 1.2em; margin-bottom: 3px; color: #999;}
-			.header { height: 45px; margin-bottom: 5px;}
-			.header .title { font-size: 2em; color: #999; }
-			.footerWrapper { margin-top: 20px; }
-			.footer { margin-bottom: 5px; font-size: 8pt;}
-			.footer a { color: #333; }
-			.disclaimer { color: #999; font-size: 8pt; font-style: italic; }
-			.bread-crumbs { font-size: 10pt; color: #666;
-			margin-bottom: 15px; border-bottom: 1px solid #ccc;}
-			.bread-crumbs a { font-size: 10pt; color: #666; }
-			.description { margin-top: 5px; margin-bottom: 15px; }
-		</style>
 		<script type="text/javascript">
 			$(function(){
 			// Dialog

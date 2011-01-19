@@ -19,6 +19,7 @@ import static java.lang.System.out;
 
 import java.io.File;
 
+import com.procippus.ivy.util.AssetsUtil;
 import com.procippus.ivy.util.FileUtil;
 import com.procippus.ivy.util.HTMLUtil;
 import com.procippus.ivy.util.PropertiesUtil;
@@ -68,6 +69,10 @@ public class HtmlBuilder {
 				if (propertiesFileName!=null) 
 					PropertiesUtil.setUserProperties(propertiesFileName);
 				FileUtil.init();
+				
+				out.println("Writing assets");
+				AssetsUtil.setPath(PropertiesUtil.getValue("assets.root.write"));
+				AssetsUtil.writeAssetsFromClasspath();
 				
 				out.println(PropertiesUtil.getValue("msg.reading", ivyRoot));
 				FileUtil.readDirectoryStructure(ivyRootDirectory);
