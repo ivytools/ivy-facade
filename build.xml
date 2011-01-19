@@ -56,6 +56,7 @@
             <fileset dir="${src.dir}" />
         </jar>
     	
+    	<!--
     	<gcupload 
     	        username="${gc.username}" 
     	        password="${gc.password}" 
@@ -63,7 +64,7 @@
     	        filename="${dist.dir}/IvyFacade-1.0.${build.number}.jar" 
     	        targetfilename="IvyFacade-1.0.${build.number}.jar"
     	        summary="Version 1.0.${build.number} of Ivy Facade"
-    	        labels="Featured, Type-Package, OpSys-All" />
+    	        labels="Featured, Type-Package, OpSys-All" /> -->
     	
     	
     </target>
