@@ -26,7 +26,7 @@ public class AssetsUtil {
 	
 	static String path;
 	public static void setPath(String path) {
-		if (path != null && !path.endsWith(""+File.pathSeparatorChar))
+		if (path != null && path.trim().length() > 0 && !path.endsWith(""+File.pathSeparatorChar))
 			path = path + File.separatorChar;
 		AssetsUtil.path = path;
 	}
