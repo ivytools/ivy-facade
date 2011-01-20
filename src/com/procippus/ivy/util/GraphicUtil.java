@@ -27,8 +27,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.procippus.ivy.model.IvyDependency;
-import com.procippus.ivy.model.IvyFile;
+import com.procippus.ivy.model.Dependency;
+import com.procippus.ivy.model.Module;
 
 /**
  * @author Procippus, LLC
@@ -78,7 +78,7 @@ public class GraphicUtil {
 		}
 	}
 
-	private static int drawNode(Graphics2D g2, String org, String name, int offset, int row, int centerX, int centerY, int totalHeight, boolean bottom) {
+	private static int drawNode(Graphics2D g2, String org, String name, int offset, int row, int centerX, int centerY, int totalHeight, boolean bottom, boolean isMissing) {
 		FontMetrics m = g2.getFontMetrics();
 		
 		int fontHeight = m.getHeight();
@@ -113,30 +113,34 @@ public class GraphicUtil {
 		g2.drawString(org,textX, textY-10);
 		
 		g2.setFont(FONT_NORMAL);
+		if (isMissing) {
+			g2.setColor(RED);
+		}
 		g2.drawString(name,textX, textY);
+		g2.setColor(Color.BLACK);
 		
 		return labelWidth + offset + MARGIN;
 	}
 	
-	private static String buildDisplayText(IvyFile d) {
+	private static String buildDisplayText(Module module) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(d.getModule())
+		builder.append(module.getInfo().getModule())
 		       .append(" (")
-		       .append(d.getRevision()).append(")");
+		       .append(module.getInfo().getRevision()).append(")");
 		return builder.toString();
 	}
 	
-	private static String buildDisplayText(IvyDependency d) {
+	private static String buildDisplayText(Dependency dependency) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(d.getName())
+		builder.append(dependency.getName())
 		       .append(" (")
-		       .append(d.getRevision()).append(")");
+		       .append(dependency.getRev()).append(")");
 		return builder.toString();
 	}
 	
-	public static BufferedImage Draw(int w, int h, IvyFile ivyFile) {
-		List<IvyFile> dependents = ivyFile.getDependents();
-		List<IvyDependency> dependencies = ivyFile.getDependencies();
+	public static BufferedImage Draw(int w, int h, Module module) {
+		List<Dependency> dependents = module.getDependentList().getDependencies();
+		List<Dependency> dependencies = module.getDependencyList().getDependencies();
 		int centerX = w/2;
 		int centerY = h/2;
 		
@@ -161,7 +165,7 @@ public class GraphicUtil {
 		if (totalDependents > 0) {
 			for (int i=0;i<totalDependents;i++) {
 				String name = buildDisplayText(dependents.get(i));
-				offset = drawNode(g2, dependents.get(i).getOrganization(), name, offset, row, centerX, centerY, h, false);
+				offset = drawNode(g2, dependents.get(i).getOrg(), name, offset, row, centerX, centerY, h, false, dependents.get(i).getMissing());
 				if (i<totalDependents-2) {
 					int x = offset + g2.getFontMetrics().stringWidth(buildDisplayText(dependents.get(i+1)));
 					if (x>w) {
@@ -172,7 +176,7 @@ public class GraphicUtil {
 			}
 		} else {
 			offset = g2.getFontMetrics().stringWidth("No dependents");
-			drawNode(g2, "", "No dependents", ((centerX)-offset/2)-5, row, centerX, centerY, h, false);
+			drawNode(g2, "", "No dependents", ((centerX)-offset/2)-5, row, centerX, centerY, h, false, false);
 		}
 		
 		offset = MARGIN;
@@ -180,7 +184,7 @@ public class GraphicUtil {
 		if (totalDependencies > 0) {
 			for (int i=0; i<totalDependencies;i++) {
 				String name = buildDisplayText(dependencies.get(i));
-				offset = drawNode(g2, dependencies.get(i).getOrganization(), name, offset, row, centerX, centerY, h, true);
+				offset = drawNode(g2, dependencies.get(i).getOrg(), name, offset, row, centerX, centerY, h, true, dependencies.get(i).getMissing());
 				if (i<totalDependencies-2) {
 					int x = offset + g2.getFontMetrics().stringWidth(buildDisplayText(dependencies.get(i+1)));
 					if (x>w) {
@@ -191,10 +195,10 @@ public class GraphicUtil {
 			}
 		} else {
 			offset = g2.getFontMetrics().stringWidth("No dependencies");
-			drawNode(g2, "", "No dependencies", ((centerX)-offset/2)-5, row, centerX, centerY, h, true);
+			drawNode(g2, "", "No dependencies", ((centerX)-offset/2)-5, row, centerX, centerY, h, true, false);
 		}
 		
-		int titleWidth = g2.getFontMetrics().stringWidth(buildDisplayText(ivyFile));
+		int titleWidth = g2.getFontMetrics().stringWidth(buildDisplayText(module));
 		int fontHeight = g2.getFontMetrics().getHeight();
 		
 		int ovalWidth = 150;
@@ -211,7 +215,7 @@ public class GraphicUtil {
 		g2.setColor(BAIGE);
 		g2.fillOval(ovalCenterX, ovalCenterY , ovalWidth, ovalHeight);
 		g2.setColor(Color.BLACK);
-		g2.drawString(buildDisplayText(ivyFile), centerX-titleWidth/2, (centerY-fontHeight/2) + 12);
+		g2.drawString(buildDisplayText(module), centerX-titleWidth/2, (centerY-fontHeight/2) + 12);
 		
 		return bi;
 	}

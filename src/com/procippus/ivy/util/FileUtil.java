@@ -21,15 +21,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.procippus.ivy.model.IvyDependency;
-import com.procippus.ivy.model.IvyFile;
+import com.procippus.ivy.model.Dependency;
+import com.procippus.ivy.model.DependencyList;
+import com.procippus.ivy.model.Info;
+import com.procippus.ivy.model.Module;
 
 /**
  * @author Procippus, LLC
  * @author Ryan McGuinness
  */
 public class FileUtil {
-	public static List<IvyFile> ivyFiles = new ArrayList<IvyFile>();
+	public static List<Module> modules = new ArrayList<Module>();
 	
 	private static String[] ignoreFiles = null;
 	private static String ivyMatchPattern = null;
@@ -66,14 +68,22 @@ public class FileUtil {
 			throw(new RuntimeException("Please initialize the FileUtil class before using."));
 		} else {
 			List<File> directories = new ArrayList<File>();
+			
+			//Assume the directory is empty until proven otherwise
 			Boolean hasFiles = Boolean.FALSE;
 			
 			if (directory.isDirectory()) {
+				//Get a list of files in the directory
 				File[] files = directory.listFiles();
+				
+				//Iterate over the files
 				for (File f : files) {
+					//If the file is a directory, and not ignored recurse into directory
 					if (f.isDirectory()) {
 						if (ignoreDirectory.indexOf(f.getName()) < 0)
 							directories.add(f);
+						
+					//Otherwise determine if the file should be ignored
 					} else {
 						Boolean ignore = Boolean.FALSE;
 						for (String i : ignoreFiles) {
@@ -81,17 +91,25 @@ public class FileUtil {
 								ignore = Boolean.TRUE;
 							}
 						}
-						if (!ignore) hasFiles = Boolean.TRUE; 
+						//If the file should not be ignored, then tell the 
+						//parser the directory has files
+						if (!ignore) hasFiles = Boolean.TRUE;
+						
+						//If the file is an Ivy File, parse the file and add it
+						//to the ivyFile array
 						if (f.getName().matches(ivyMatchPattern)) {
-							IvyFile ivyf = XMLUtil.parseIvyFile(f);
-							if (!ivyFiles.contains(ivyf)) ivyFiles.add(ivyf);
+							Module module = XMLUtil.parseIvyFile(f);
+							if (!modules.contains(module)) modules.add(module);
 						}
 					}
 				}
 			}
+			//If the directory does not have files, create index.html based on the directory.xsl
 			if (!hasFiles) {
 				HTMLUtil.buildDirectoryHtml(directory, directories);
 			}
+			
+			//Recurse into directory structure
 			for (File d : directories) {
 				readDirectoryStructure(d);
 			}
@@ -99,24 +117,35 @@ public class FileUtil {
 	}
 	
 	public static void createDependentGraph() {
-		for (IvyFile ivyF : FileUtil.ivyFiles) {
-			for (IvyDependency ivyDep : ivyF.getDependencies()) {
-				IvyFile f = new IvyFile();
-				f.setOrganization(ivyDep.getOrganization());
-				f.setModule(ivyDep.getName());
-				f.setRevision(ivyDep.getRevision());
-				for (IvyFile innerFile : FileUtil.ivyFiles) {
-					if (innerFile.equals(f)) {
-						innerFile.addDependent(ivyF);
+		//Validate that the FileUtil has been initialized and read
+		if (FileUtil.modules != null && FileUtil.modules.size()>0) {
+			//Iterate over the ivyFiles
+			for (Module module : FileUtil.modules) {
+				List<Dependency> dependencies = module.getDependencyList().getDependencies();
+				Boolean isMissingDeps = Boolean.FALSE;
+				for (Dependency dep : dependencies) {
+					String filePath = (HTMLUtil.ivyRoot + File.separator + dep.getPath());
+					File f = new File(filePath);
+					if (!f.exists()) {
+						dep.setMissing(Boolean.TRUE);
+						isMissingDeps = Boolean.TRUE;
+					}
+					
+					for (Module innerModule : FileUtil.modules) {
+						Info info = innerModule.getInfo();
+						if (dep.isEqualToInfo(info)) {
+							innerModule.getDependentList().addDependency(new Dependency(module));
+						}
 					}
 				}
+				if (isMissingDeps) System.err.println("Missing dependencis from: " + module.getFilePath());
 			}
 		}
 	}
 	
 	public static void writeIvyHtmlFiles() {
-		for (IvyFile ivyFile : ivyFiles) {
-			HTMLUtil.buildIvyHtml(ivyStylesheet, ivyFile);
+		for (Module module : modules) {
+			HTMLUtil.buildIvyHtml(ivyStylesheet, module);
 		}
 	}
 }

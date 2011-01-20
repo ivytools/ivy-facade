@@ -60,7 +60,7 @@ public class IvyFacadeTask extends Task {
 			out.println(PropertiesUtil.getValue("msg.create.ivy"));
 			FileUtil.writeIvyHtmlFiles();
 			
-			out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.ivyFiles.size()));
+			out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.modules.size()));
 			
 			out.println(PropertiesUtil.getValue("msg.finished"));
 		}

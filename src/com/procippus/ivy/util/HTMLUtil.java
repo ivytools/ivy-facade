@@ -24,13 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
-import nu.xom.Element;
 import nu.xom.ParsingException;
 
-import com.procippus.ivy.model.IvyFile;
+import com.procippus.ivy.model.Module;
 
 /**
  * @author Procippus, LLC
@@ -43,7 +41,7 @@ public class HTMLUtil {
 	private static final String MOD = "MOD";
 	private static final String REV = "REV";
 	
-	private static File ivyRoot = null;
+	public static File ivyRoot = null;
 	
 	public static void init(File ivyRoot) {
 		HTMLUtil.ivyRoot = ivyRoot;
@@ -60,24 +58,15 @@ public class HTMLUtil {
 		}
 	}
 	
-	public static void buildIvyHtml(File styleSheet, IvyFile ivyFile) {
+	public static void buildIvyHtml(File styleSheet, Module ivyFile) {
 		Document ivyDoc;
 		Document stylesheet;
 		try {
 			File f = new File(ivyFile.getFilePath());
 			Builder builder = new Builder();
 			stylesheet = builder.build(styleSheet);
-			ivyDoc = builder.build(f);
 			
-			Element dependents = new Element("dependents");
-			for (IvyFile ivyf : ivyFile.getDependents()) {
-				Element dependent = new Element("dependent");
-				dependent.addAttribute(new Attribute("org", ivyf.getOrganization()));
-				dependent.addAttribute(new Attribute("name", ivyf.getModule()));
-				dependent.addAttribute(new Attribute("rev", ivyf.getRevision()));
-				dependents.appendChild(dependent);
-			}
-			ivyDoc.getRootElement().appendChild(dependents);
+			ivyDoc = new Document(ivyFile.toElement());
 			
 			Document result = XMLUtil.transform(stylesheet, ivyDoc, null);
 			writeIndexFile(f.getParent() + File.separatorChar + INDEX, result.toXML());
@@ -91,6 +80,7 @@ public class HTMLUtil {
 			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivyFile.getFilePath()));
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			System.err.println(ivyFile.getFilePath());
 			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_IO));
 		}
 	}
@@ -106,7 +96,6 @@ public class HTMLUtil {
 		} else {
 			remainder = currentDirectoryPath.split(""+File.separatorChar);
 		}
-		
 		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(FULL_PATH, currentDirectoryPath);

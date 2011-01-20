@@ -587,3 +587,5 @@ li { margin-bottom: 3px; }
 .bread-crumbs { font-size: 10pt; color: #666; margin-bottom: 15px; border-bottom: 1px solid #ccc;}
 .bread-crumbs a { font-size: 10pt; color: #666; }
 .description { margin-top: 5px; margin-bottom: 15px; }
+.bread-crumbs .error a { font-size: 10pt; color: #AE1E1E; }
+.error { color: #AE1E1E; }

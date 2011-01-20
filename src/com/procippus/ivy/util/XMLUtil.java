@@ -13,8 +13,6 @@ package com.procippus.ivy.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import static java.lang.System.out;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,20 +26,22 @@ import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Elements;
 import nu.xom.Nodes;
 import nu.xom.xslt.XSLTransform;
 
-import com.procippus.ivy.model.IvyDependency;
-import com.procippus.ivy.model.IvyFile;
+import com.procippus.ivy.model.Module;
 
 /**
  * @author Procippus, LLC
  * @author Ryan McGuinness
  */
 public class XMLUtil {
-	static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd [HH:mm z]");
+	static final SimpleDateFormat sdf = new SimpleDateFormat(PropertiesUtil.getValue("default.date.format"));
 	static final Date processTime = new Date();
+	
+	static final String PRM_TS = "timestamp";
+	static final String PRM_AR = "assetRoot";
+	static final String PRM_IE = "imageExtension";
 	
 	public static Document transform(Document stylesheet, Document xml, Map<String, String> params) {
 		Document result = null;
@@ -54,15 +54,13 @@ public class XMLUtil {
 						transform.setParameter(key, params.get(key));
 					}
 				}
-				transform.setParameter("timestamp", sdf.format(processTime));
-				transform.setParameter("assetRoot", PropertiesUtil.getValue("assets.root.absolute.url"));
-				transform.setParameter("imageExtension", PropertiesUtil.getValue("graphics.extension"));
+				transform.setParameter(PRM_TS, sdf.format(processTime));
+				transform.setParameter(PRM_AR, PropertiesUtil.getValue("assets.root.absolute.url"));
+				transform.setParameter(PRM_IE, PropertiesUtil.getValue("graphics.extension"));
 				Nodes output = transform.transform(xml);
 				result = XSLTransform.toDocument(output);
 			}
 		} catch (Exception e) {
-			out.println("Unable to transform: " + xml.toXML());
-			out.println("With stylesheet: " + stylesheet.toXML());
 			e.printStackTrace();
 		}
 		return result;
@@ -97,49 +95,29 @@ public class XMLUtil {
 	
 	private static final String EL_DIRECTORIES = "directories";
 	private static final String EL_DIRECTORY = "directory";
-	private static final String EL_NAME = "name";
+	private static final String ATTR_NAME = "name";
 	
 	public static Document buildDirectoryXML(List<File> directories) {
 		Element root = new Element(EL_DIRECTORIES);
 		for (File d : directories) {
 			Element dir = new Element(EL_DIRECTORY);
-			dir.addAttribute(new Attribute(EL_NAME, d.getName()));
+			dir.addAttribute(new Attribute(ATTR_NAME, d.getName()));
 			root.appendChild(dir);
 		}
 		Document d = new Document(root);
 		return d;
 	}
 	
-	public static IvyFile parseIvyFile(File ivy, Document ivyDoc) {
-		IvyFile i = new IvyFile();
+	public static Module parseIvyFile(File ivy, Document ivyDoc) {
+		Module i = new Module();
 		i.setFilePath(ivy.getPath());
-		i.setOrganization(ivyDoc.getRootElement().getChildElements("info").get(0).getAttributeValue("organisation"));
-		i.setModule(ivyDoc.getRootElement().getChildElements("info").get(0).getAttributeValue("module"));
-		i.setRevision(ivyDoc.getRootElement().getChildElements("info").get(0).getAttributeValue("revision"));
-		i.setStatus(ivyDoc.getRootElement().getChildElements("info").get(0).getAttributeValue("status"));
-		i.setPublication(ivyDoc.getRootElement().getChildElements("info").get(0).getAttributeValue("publication"));
-		
-		Elements deps = ivyDoc.getRootElement().getChildElements("dependencies");
-		
-		if (deps != null && deps.size()>0) {
-			if (deps.get(0) != null && deps.get(0).getChildCount() >0) {
-				Elements children = deps.get(0).getChildElements("dependency");
-				for (int j=0; j<children.size();j++) {
-					Element c = children.get(j);
-					IvyDependency id = new IvyDependency();
-					id.setName(c.getAttributeValue("name"));
-					id.setOrganization(c.getAttributeValue("org"));
-					id.setRevision(c.getAttributeValue("rev"));
-					i.addDependency(id);
-				}
-			}
-		}
+		i.fromElement(ivyDoc.getRootElement());
 		return i;
 	}
 	
-	public static IvyFile parseIvyFile(File ivy) {
+	public static Module parseIvyFile(File ivy) {
 		Document ivyDoc;
-		IvyFile ivyFile = null;
+		Module ivyFile = null;
 		try {
 			Builder builder = new Builder();
 			ivyDoc = builder.build(ivy);
@@ -148,5 +126,15 @@ public class XMLUtil {
 			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivy.getPath()));
 		}
 		return ivyFile;
+	}
+	
+	static final String EL_IVY_FILES = "ivyFiles";
+	static final String EL_IVY_FILE = "ivyFile";
+	
+	public static Document buildIndexDocument() {
+		Element root = new Element(EL_IVY_FILES);
+		
+		Document doc = new Document(root);
+		return doc;
 	}
 }

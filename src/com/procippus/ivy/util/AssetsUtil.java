@@ -55,8 +55,4 @@ public class AssetsUtil {
 			}
 		}
 	}
-	
-	public static void main(String[] args) {
-		writeAssetsFromClasspath();
-	}
 }

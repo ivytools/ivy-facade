@@ -1,29 +1,15 @@
 package com.procippus.ivy.model;
 
-/*
- * 
- * Copyright 2011 Procippus, LLC
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 		http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import nu.xom.Attribute;
+import nu.xom.Element;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * @author Procippus, LLC
- * @author Ryan McGuinness
- */
-public class IvyFile implements Comparable<IvyFile> {
-	String filePath;
+public class Info implements Comparable<Info> {
+	public static final String EL_INFO = "info";
+	static final String ATTR_ORG = "organisation";
+	static final String ATTR_MOD = "module";
+	static final String ATTR_REV = "revision";
+	static final String ATTR_STAT = "status";
+	static final String ATTR_PUB = "publication";
 	
 	String organization;
 	String module;
@@ -31,15 +17,11 @@ public class IvyFile implements Comparable<IvyFile> {
 	String status; 
 	String publication;
 	
-	List<IvyDependency> dependencies = new ArrayList<IvyDependency>();
-	List<IvyFile> dependents = new ArrayList<IvyFile>();
+	public Info() {}
 	
-	public IvyFile() {}
-	
-	public IvyFile(String filePath, String organization, String module,
-			String revision, String status, String publication) {
+	public Info(String organization, String module, String revision,
+			String status, String publication) {
 		super();
-		this.filePath = filePath;
 		this.organization = organization;
 		this.module = module;
 		this.revision = revision;
@@ -47,24 +29,6 @@ public class IvyFile implements Comparable<IvyFile> {
 		this.publication = publication;
 	}
 
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-
-	public void addDependency(IvyDependency dependency) {
-		if (!dependencies.contains(dependency))
-			dependencies.add(dependency);
-	}
-	
-	public void addDependent(IvyFile ivyFile) {
-		if (!dependents.contains(ivyFile))
-			dependents.add(ivyFile);
-	}
-	
 	public String getOrganization() {
 		return organization;
 	}
@@ -95,16 +59,6 @@ public class IvyFile implements Comparable<IvyFile> {
 	public void setPublication(String publication) {
 		this.publication = publication;
 	}
-	
-
-	public List<IvyDependency> getDependencies() {
-		return dependencies;
-	}
-
-	public List<IvyFile> getDependents() {
-		return dependents;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -116,7 +70,6 @@ public class IvyFile implements Comparable<IvyFile> {
 				+ ((revision == null) ? 0 : revision.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -125,7 +78,7 @@ public class IvyFile implements Comparable<IvyFile> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IvyFile other = (IvyFile) obj;
+		Info other = (Info) obj;
 		if (module == null) {
 			if (other.module != null)
 				return false;
@@ -144,14 +97,26 @@ public class IvyFile implements Comparable<IvyFile> {
 		return true;
 	}
 	
-	@Override
-	public String toString() {
-		return "" + this.organization + " / " + this.module + " / " + this.revision;
-	}
-
-	@Override
-	public int compareTo(IvyFile o) {
-		return this.module.compareTo(o.getModule());
+	public void fromElement(Element e) {
+		this.organization = e.getAttributeValue(ATTR_ORG);
+		this.module = e.getAttributeValue(ATTR_MOD);
+		this.revision = e.getAttributeValue(ATTR_REV);
+		this.status = e.getAttributeValue(ATTR_STAT);
+		this.publication = e.getAttributeValue(ATTR_PUB);
 	}
 	
+	public Element toElement() {
+		Element root = new Element(EL_INFO);
+			root.addAttribute(new Attribute(ATTR_ORG, organization));
+			root.addAttribute(new Attribute(ATTR_MOD, module));
+			root.addAttribute(new Attribute(ATTR_REV, revision));
+			root.addAttribute(new Attribute(ATTR_STAT, status));
+			root.addAttribute(new Attribute(ATTR_PUB, publication));
+		return root;
+	}
+	
+	@Override
+	public int compareTo(Info o) {
+		return this.module.compareTo(o.getModule());
+	}
 }

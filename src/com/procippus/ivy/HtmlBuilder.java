@@ -65,15 +65,23 @@ public class HtmlBuilder {
 			
 			validateIvyRoot(ivyRoot);
 			if (ivyRootDirectory!=null) {
+				
+				//Initialize the HTMLUtil with the root ivyDirectory
 				HTMLUtil.init(ivyRootDirectory);
+				
+				//Initialize the properties files
 				if (propertiesFileName!=null) 
 					PropertiesUtil.setUserProperties(propertiesFileName);
+				
+				//Initialize the File Util.
 				FileUtil.init();
 				
+				//Write out the assets directory structure first
 				out.println("Writing assets");
 				AssetsUtil.setPath(PropertiesUtil.getValue("assets.root.write"));
 				AssetsUtil.writeAssetsFromClasspath();
 				
+				//Read the IvyRepository
 				out.println(PropertiesUtil.getValue("msg.reading", ivyRoot));
 				FileUtil.readDirectoryStructure(ivyRootDirectory);
 				
@@ -83,7 +91,7 @@ public class HtmlBuilder {
 				out.println(PropertiesUtil.getValue("msg.create.ivy"));
 				FileUtil.writeIvyHtmlFiles();
 				
-				out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.ivyFiles.size()));
+				out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.modules.size()));
 				
 			} else {
 				out.println(PropertiesUtil.getValue("err.process", ivyRootDirectory.getPath()));

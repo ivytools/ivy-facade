@@ -40,8 +40,19 @@ limitations under the License.
 			<body>
 				<xsl:call-template name="banner" />
 				<div class="bread-crumbs">
-					<a href="../../../">Home</a> / <a href="../../"><xsl:value-of select="$org" /></a> / 
-					<a href="../"><xsl:value-of select="$module" /></a> / <xsl:value-of select="$revision" />
+					<xsl:choose>
+						<xsl:when test="//@missingDependencies">
+							<div class="error">
+								<a href="../../../">Home</a> / <a href="../../"><xsl:value-of select="$org" /></a> / 
+								<a href="../"><xsl:value-of select="$module" /></a> / <xsl:value-of select="$revision" />
+							</div>
+						</xsl:when>
+						<xsl:otherwise>
+							<a href="../../../">Home</a> / <a href="../../"><xsl:value-of select="$org" /></a> / 
+							<a href="../"><xsl:value-of select="$module" /></a> / <xsl:value-of select="$revision" />
+						</xsl:otherwise>
+					</xsl:choose>
+					
 				</div>
 				
 				<div class="content">
@@ -61,7 +72,7 @@ limitations under the License.
 	                      <li><a href="#sources">Source Code (<xsl:value-of select="count(//publications/artifact[@type='src'])" />)</a></li>
 	                      <li><a href="#licenses">License Files (<xsl:value-of select="count(//publications/artifact[@type='license'])" />)</a></li>
 	                      <li><a href="#dependencies">Dependencies (<xsl:value-of select="count(//dependencies/dependency)" />)</a></li>
-	                      <li><a href="#dependents">Dependents (<xsl:value-of select="count(//dependents/dependent)" />)</a></li>
+	                      <li><a href="#dependents">Dependents (<xsl:value-of select="count(//dependents/dependency)" />)</a></li>
 	                      <li><a href="#graph">Graph</a></li>
 	                  </ul>
 						<div id="libraries">
@@ -134,9 +145,18 @@ limitations under the License.
 								<xsl:for-each select="//dependencies/dependency">
 									<li>
 										<xsl:param name="depLink">../../../<xsl:value-of select="@org" />/<xsl:value-of select="@name" />/<xsl:value-of select="@rev" />/</xsl:param>
-										<a href="{$depLink}">
-											<xsl:value-of select="@org" /> - <xsl:value-of select="@name" /> - <xsl:value-of select="@rev" />
-										</a>
+										<xsl:choose>
+											<xsl:when test="@missing">
+												<div class="error">
+													<xsl:value-of select="@org" /> - <xsl:value-of select="@name" /> - <xsl:value-of select="@rev" />
+												</div>
+											</xsl:when>
+											<xsl:otherwise>
+												<div>
+													<a href="{$depLink}"><xsl:value-of select="@org" /> - <xsl:value-of select="@name" /> - <xsl:value-of select="@rev" /></a>
+												</div>
+											</xsl:otherwise>
+										</xsl:choose>
 									</li>
 								</xsl:for-each>
 								</ul>
@@ -147,17 +167,15 @@ limitations under the License.
 						
 						<div id="dependents">
 							<xsl:choose>
-							<xsl:when test="not(//dependents/dependent)">
+							<xsl:when test="not(//dependents/dependency)">
 								No dependents listed.
 							</xsl:when>
 							<xsl:otherwise>
 							<ul>
-								<xsl:for-each select="//dependents/dependent">
+								<xsl:for-each select="//dependents/dependency">
 									<li>
 										<xsl:param name="dependentLink">../../../<xsl:value-of select="@org" />/<xsl:value-of select="@name" />/<xsl:value-of select="@rev" />/</xsl:param>
-										<a href="{$dependentLink}">
-											<xsl:value-of select="@org" /> - <xsl:value-of select="@name" /> - <xsl:value-of select="@rev" />
-										</a>
+										<a href="{$dependentLink}"><xsl:value-of select="@org" /> - <xsl:value-of select="@name" /> - <xsl:value-of select="@rev" /></a>
 									</li>
 								</xsl:for-each>
 								</ul>
