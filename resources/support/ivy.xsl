@@ -41,7 +41,7 @@ limitations under the License.
 				<xsl:call-template name="banner" />
 				<div class="bread-crumbs">
 					<xsl:choose>
-						<xsl:when test="//@missingDependencies">
+						<xsl:when test="//@missingDependencies = 'true'">
 							<div class="error">
 								<a href="../../../">Home</a> / <a href="../../"><xsl:value-of select="$org" /></a> / 
 								<a href="../"><xsl:value-of select="$module" /></a> / <xsl:value-of select="$revision" />

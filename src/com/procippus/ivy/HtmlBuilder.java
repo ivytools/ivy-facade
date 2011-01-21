@@ -85,9 +85,15 @@ public class HtmlBuilder {
 				out.println(PropertiesUtil.getValue("msg.reading", ivyRoot));
 				FileUtil.readDirectoryStructure(ivyRootDirectory);
 				
+				//Generate dependency graph
 				out.println(PropertiesUtil.getValue("msg.dependents"));
 				FileUtil.createDependentGraph();
 				
+				//Generate directory HTML
+				out.println("Generating Directory HTML");
+				FileUtil.writeDirectoryFiles();
+				
+				//Generate Ivy HTML
 				out.println(PropertiesUtil.getValue("msg.create.ivy"));
 				FileUtil.writeIvyHtmlFiles();
 				

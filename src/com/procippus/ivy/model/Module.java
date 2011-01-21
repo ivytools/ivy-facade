@@ -122,4 +122,9 @@ public class Module implements Comparable<Module> {
 		
 		return e;
 	}
+	
+	public Element toDependencyElement() {
+		Dependency d = new Dependency(this);
+		return d.toElement();
+	}
 }

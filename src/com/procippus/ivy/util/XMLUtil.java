@@ -93,18 +93,52 @@ public class XMLUtil {
 		return f;
 	}
 	
+	private static final String EL_HOME = "home";
+	private static final String EL_HEALTH = "health";
 	private static final String EL_DIRECTORIES = "directories";
 	private static final String EL_DIRECTORY = "directory";
 	private static final String ATTR_NAME = "name";
 	
-	public static Document buildDirectoryXML(List<File> directories) {
+	private static Element buildDirectoryElement(List<File> directories) {
 		Element root = new Element(EL_DIRECTORIES);
 		for (File d : directories) {
 			Element dir = new Element(EL_DIRECTORY);
 			dir.addAttribute(new Attribute(ATTR_NAME, d.getName()));
 			root.appendChild(dir);
 		}
+		return root;
+	}
+	
+	public static Document buildHomeDirectoryXML(List<File> directories) {
+		Element root = new Element(EL_HOME);
+		root.appendChild(buildDirectoryElement(directories));
+
+		Element health = new Element(EL_HEALTH);
+		
+		Element moduleStats = new Element("moduleStats");
+		moduleStats.addAttribute(new Attribute("totalModules", ""+FileUtil.modules.size()));
+		moduleStats.addAttribute(new Attribute("totalMissingDependencies", ""+FileUtil.missingDependencies.size()));
+		health.appendChild(moduleStats);
+		
+		Element missing = new Element("missing");
+		for (Module m : FileUtil.missingDependencies) {
+			missing.appendChild(m.toDependencyElement());
+		}
+		health.appendChild(missing);
+		root.appendChild(health);
+		
+		Element index = new Element("index");
+		for (Module m : FileUtil.modules) {
+			index.appendChild(m.toDependencyElement());
+		}
+		root.appendChild(index);
+		
 		Document d = new Document(root);
+		return d;
+	}
+	
+	public static Document buildDirectoryXML(List<File> directories) {
+		Document d = new Document(buildDirectoryElement(directories));
 		return d;
 	}
 	

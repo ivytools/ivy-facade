@@ -19,10 +19,11 @@ import static java.lang.System.out;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.procippus.ivy.model.Dependency;
-import com.procippus.ivy.model.DependencyList;
 import com.procippus.ivy.model.Info;
 import com.procippus.ivy.model.Module;
 
@@ -32,6 +33,9 @@ import com.procippus.ivy.model.Module;
  */
 public class FileUtil {
 	public static List<Module> modules = new ArrayList<Module>();
+	public static List<Module> missingDependencies = new ArrayList<Module>();
+	
+	public static Map<File, List<File>> allDirectories = new HashMap<File, List<File>>();
 	
 	private static String[] ignoreFiles = null;
 	private static String ivyMatchPattern = null;
@@ -106,7 +110,7 @@ public class FileUtil {
 			}
 			//If the directory does not have files, create index.html based on the directory.xsl
 			if (!hasFiles) {
-				HTMLUtil.buildDirectoryHtml(directory, directories);
+				allDirectories.put(directory, directories);
 			}
 			
 			//Recurse into directory structure
@@ -138,7 +142,9 @@ public class FileUtil {
 						}
 					}
 				}
-				if (isMissingDeps) System.err.println("Missing dependencis from: " + module.getFilePath());
+				if (isMissingDeps) {
+					missingDependencies.add(module);
+				}
 			}
 		}
 	}
@@ -146,6 +152,12 @@ public class FileUtil {
 	public static void writeIvyHtmlFiles() {
 		for (Module module : modules) {
 			HTMLUtil.buildIvyHtml(ivyStylesheet, module);
+		}
+	}
+	
+	public static void writeDirectoryFiles() {
+		for (File key : allDirectories.keySet()) {
+			HTMLUtil.buildDirectoryHtml(key, allDirectories.get(key));
 		}
 	}
 }

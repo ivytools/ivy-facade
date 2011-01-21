@@ -108,7 +108,12 @@ public class HTMLUtil {
 				params.put(REV, remainder[2]);
 		}
 
-		Document directoriesAsXml = XMLUtil.buildDirectoryXML(directories);
+		Document directoriesAsXml = null; 
+		if (directory.getPath().equals(ivyRoot.getPath())) {
+			directoriesAsXml = XMLUtil.buildHomeDirectoryXML(directories);
+		} else {
+			directoriesAsXml = XMLUtil.buildDirectoryXML(directories);
+		}
 		if (directoriesAsXml != null
 				&& directoriesAsXml.getRootElement() != null) {
 			try {
