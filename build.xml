@@ -37,21 +37,20 @@
 	<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload"/>
 	
     <target name="dist" depends="compile">
-    	<buildnumber file="ivyfacade.number" />
     	
-        <jar destfile="${dist.dir}/IvyFacade-1.0.${build.number}.jar">
+        <jar destfile="${dist.dir}/IvyFacade-${build.number}.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="com.procippus.ivy.HtmlBuilder"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar commons-codec-1.4.0.jar"/>
             </manifest>
             <zipfileset src="${ivy.lib.dir}/jar-in-jar-loader-1.3.0.zip"/>
             <fileset dir="${compile.target}"/>
-            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar"/>
+            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar,commons-codec-1.4.0.jar"/>
         </jar>
 
-        <jar destfile="${dist.dir}/IvyFacade-1.0.${build.number}-sources.jar">
+        <jar destfile="${dist.dir}/IvyFacade-${build.number}-sources.jar">
             <fileset dir="${resources.dir}" />
             <fileset dir="${src.dir}" />
         </jar>
