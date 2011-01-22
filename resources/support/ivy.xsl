@@ -110,7 +110,6 @@ limitations under the License.
 								No source files listed.
 							</xsl:otherwise>
 						</xsl:choose>
-						
 						</div>
 					
 						<div id="licenses">
@@ -184,13 +183,15 @@ limitations under the License.
 						</div>
 						
 						<div id="graph">
+							<xsl:param name="mimeType" select="//image/@mimeType" />
+							<xsl:param name="imgWidth" selecct="//image/@width" />
+							<xsl:param name="imgHeight" select="//image/@height" />
+							<xsl:param name="imgData" select="//image" />
 							<div style="text-align: center;">
-								<img src="graph{$imageExtension}" style="border: 1px solid #999;" />
+								<img src="data:{$mimeType};base64,{$imgData}" style="border: 1px solid #999;" alt="Module Graph" width="{$imgWidth}" height="{$imgHeight}"/> 
 							</div>
 						</div>
 					</div>
-					
-					
 					
 					<div style="margin-top: 10px;">Ivy Usage:</div>
 					<div id="usage" class="ui-tabs ui-widget ui-widget-content ui-corner-all">

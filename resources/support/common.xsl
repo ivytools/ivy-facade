@@ -26,6 +26,9 @@ limitations under the License.
 		<script type="text/javascript" src="{$assetRoot}/assets/js/ivy-facade-main-ui.js">
 			<xsl:comment>js include</xsl:comment>
 		</script>
+		<script type="text/javascript" src="{$assetRoot}/assets/js/ivy-facade-search.js">
+			<xsl:comment>js include</xsl:comment>
+		</script>
 		<link type="text/css" href="{$assetRoot}/assets/css/ivy-facade-main.css" rel="stylesheet" />
 
 		<script type="text/javascript">

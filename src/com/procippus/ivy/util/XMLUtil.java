@@ -13,10 +13,13 @@ package com.procippus.ivy.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +33,7 @@ import nu.xom.Nodes;
 import nu.xom.xslt.XSLTransform;
 
 import com.procippus.ivy.model.Module;
+import com.procippus.ivy.model.PieValue;
 
 /**
  * @author Procippus, LLC
@@ -109,6 +113,34 @@ public class XMLUtil {
 		return root;
 	}
 	
+	static final String EL_PIECHART = "piechart";
+	private static Element createPieChart() {
+		Element pieChart = new Element(EL_PIECHART);
+		pieChart.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue("graphics.mime.type")));
+		
+		double missing = FileUtil.allMissingDependencies.size();
+		double total = FileUtil.modules.size();
+		double pct = (missing / total)*100;
+
+		PieValue err = new PieValue(pct, GraphicUtil.RED);
+		PieValue all = new PieValue(100d-pct, GraphicUtil.GREEN);
+		
+		int pieChartWidth = Integer.parseInt(PropertiesUtil.getValue("graphics.piechart.width"));
+		int pieChartHeight = Integer.parseInt(PropertiesUtil.getValue("graphics.piechart.height"));
+		
+		BufferedImage bi = GraphicUtil.drawPie(new PieValue[] {err, all}, pieChartWidth, pieChartHeight);
+		
+		String imgText = NumberFormat.getInstance().format(100.00d-pct) + "%";
+		
+		GraphicUtil.addCenterTextToPieChart(bi, imgText, Color.WHITE, pieChartWidth, pieChartHeight); 
+		String hex = GraphicUtil.writeImageToBase64(bi);
+		
+		pieChart.appendChild(hex);
+		
+		return pieChart;
+	}
+	
+	
 	public static Document buildHomeDirectoryXML(List<File> directories) {
 		Element root = new Element(EL_HOME);
 		root.appendChild(buildDirectoryElement(directories));
@@ -117,7 +149,7 @@ public class XMLUtil {
 		
 		Element moduleStats = new Element("moduleStats");
 		moduleStats.addAttribute(new Attribute("totalModules", ""+FileUtil.modules.size()));
-		moduleStats.addAttribute(new Attribute("totalMissingDependencies", ""+FileUtil.missingDependencies.size()));
+		moduleStats.addAttribute(new Attribute("totalMissingDependencies", ""+FileUtil.allMissingDependencies.size()));
 		health.appendChild(moduleStats);
 		
 		Element missing = new Element("missing");
@@ -125,6 +157,7 @@ public class XMLUtil {
 			missing.appendChild(m.toDependencyElement());
 		}
 		health.appendChild(missing);
+		health.appendChild(createPieChart());
 		root.appendChild(health);
 		
 		Element index = new Element("index");

@@ -62,20 +62,21 @@ public class HTMLUtil {
 		Document ivyDoc;
 		Document stylesheet;
 		try {
+			//Create the image
+			int width = Integer.parseInt(PropertiesUtil.getValue("graphics.width"));
+			int height = Integer.parseInt(PropertiesUtil.getValue("graphics.height"));
+			
+			BufferedImage bi = GraphicUtil.draw(width, height, ivyFile);
+			ivyFile.setBase64Image(GraphicUtil.writeImageToBase64(bi));
+			
 			File f = new File(ivyFile.getFilePath());
 			Builder builder = new Builder();
 			stylesheet = builder.build(styleSheet);
 			
 			ivyDoc = new Document(ivyFile.toElement());
-			
+
 			Document result = XMLUtil.transform(stylesheet, ivyDoc, null);
-			writeIndexFile(f.getParent() + File.separatorChar + INDEX, result.toXML());
-			
-			int width = Integer.parseInt(PropertiesUtil.getValue("graphics.width"));
-			int height = Integer.parseInt(PropertiesUtil.getValue("graphics.height"));
-			
-			BufferedImage bi = GraphicUtil.Draw(width, height, ivyFile);
-			GraphicUtil.writeImage(f.getParentFile(), "graph", bi);
+			writeIndexFile(f.getParent() + File.separatorChar + INDEX, result.toXML());			
 		} catch (ParsingException ex) {
 			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivyFile.getFilePath()));
 		} catch (IOException ex) {

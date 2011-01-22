@@ -19,6 +19,8 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+import com.procippus.ivy.util.PropertiesUtil;
+
 /**
  * @author Procippus, LLC
  * @author Ryan McGuinness
@@ -26,10 +28,21 @@ import nu.xom.Elements;
 public class Module implements Comparable<Module> {
 	String filePath;
 	
+	String base64Image;
+	
 	Info info = new Info();
 	Publications publications = new Publications();
 	DependencyList dependencyList = new DependencyList();
 	DependentList dependentList = new DependentList();
+
+	
+	public String getBase64Image() {
+		return base64Image;
+	}
+
+	public void setBase64Image(String base64Image) {
+		this.base64Image = base64Image;
+	}
 
 	public String getFilePath() {
 		return filePath;
@@ -106,6 +119,7 @@ public class Module implements Comparable<Module> {
 	
 	public static final String EL_IVY_MOD = "ivy-module";
 	private static final String ATTR_MISSING_DEPS = "missingDependencies";
+	private static final String EL_IMAGE = "image";
 
 	public Element toElement() {
 		Element e = new Element(EL_IVY_MOD);
@@ -119,6 +133,15 @@ public class Module implements Comparable<Module> {
 		e.appendChild(dependencyList.toElement());
 		
 		e.appendChild(dependentList.toElement());
+		
+		if (base64Image != null) {
+			Element img = new Element(EL_IMAGE);
+			img.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue("graphics.mime.type")));
+			img.addAttribute(new Attribute("width", PropertiesUtil.getValue("graphics.width")));
+			img.addAttribute(new Attribute("height", PropertiesUtil.getValue("graphics.height")));
+			img.appendChild(base64Image);
+			e.appendChild(img);
+		}
 		
 		return e;
 	}

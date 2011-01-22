@@ -1,10 +1,4 @@
 package com.procippus.ivy.model;
-
-import java.io.File;
-
-import nu.xom.Attribute;
-import nu.xom.Element;
-
 /*
  * 
  * Copyright 2011 Procippus, LLC
@@ -19,6 +13,11 @@ import nu.xom.Element;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import java.io.File;
+
+import nu.xom.Attribute;
+import nu.xom.Element;
 
 /**
  * @author Procippus, LLC

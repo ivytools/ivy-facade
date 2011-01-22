@@ -7,6 +7,7 @@
     <dependencies>
     	<dependency org="nu" name="xom" rev="1.2.6"  />
     	<dependency org="org.apache" name="ant" rev="1.8.2"  />
+    	<dependency org="org.apache" name="commons.codec" rev="1.4.0" />
     	<dependency org="org.eclipse" name="jdt.internal.jarinjarloader" rev="1.3.0" />
     </dependencies>
 </ivy-module>

@@ -19,16 +19,22 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.procippus.ivy.model.Dependency;
 import com.procippus.ivy.model.Module;
+import com.procippus.ivy.model.PieValue;
 
 /**
  * @author Procippus, LLC
@@ -39,10 +45,11 @@ public class GraphicUtil {
 	static final int MARGIN = 10;
 	static final int NODE_RADIUS = 10;
 	
-	static final Color RED = new Color(parseInt("AE"), parseInt("1E"), parseInt("1E"));
-	static final Color BLUE_GRAY = new Color(parseInt("C3"), parseInt("D5"), parseInt("CB"));
-	static final Color DARK_BLUE = new Color(parseInt("4A"), parseInt("6B"), parseInt("6E"));
-	static final Color BAIGE = new Color(parseInt("FF"), parseInt("FF"), parseInt("CC"));
+	public static final Color RED = new Color(parseInt("AE"), parseInt("1E"), parseInt("1E"));
+	public static final Color BLUE_GRAY = new Color(parseInt("C3"), parseInt("D5"), parseInt("CB"));
+	public static final Color DARK_BLUE = new Color(parseInt("4A"), parseInt("6B"), parseInt("6E"));
+	public static final Color BAIGE = new Color(parseInt("FF"), parseInt("FF"), parseInt("CC"));
+	public static final Color GREEN = new Color(parseInt("81"), parseInt("A6"), parseInt("1A"));
 	
 	static final float F_TEN = 10.0f;
 	static final float F_ONE = 1.0f;
@@ -67,6 +74,67 @@ public class GraphicUtil {
 	
 	private static int parseInt(String s) {
 		return Integer.parseInt(s, BASE_SIXTEEN);
+	}
+	
+	public static void addCenterTextToPieChart(BufferedImage bi, String text, Color c, int w, int h) {
+		Graphics2D g2 = bi.createGraphics();
+		g2.setFont(new Font(FONT_NAME, Font.BOLD, 12));
+		g2.setColor(c);
+		FontMetrics m = g2.getFontMetrics();
+		
+
+		int left = (int)((w/2) - (m.stringWidth(text)/2));
+		int top = (int)(h/2)+12; // - (m.getHeight()/2));
+		g2.drawString(text, left, top);
+	}
+	
+	public static BufferedImage drawPie(PieValue[] slices, int w, int h) {
+		BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = bi.createGraphics();
+		g2.setColor(Color.WHITE);
+		
+		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		Rectangle area = new Rectangle(w, h);
+		
+	    // Get total value of all slices
+	    double total = 0.0D;
+	    for (int i=0; i<slices.length; i++) {
+	        total += slices[i].getValue();
+	    }
+
+	    // Draw each pie slice
+	    double curValue = 0.0D;
+	    int startAngle = 0;
+	    for (int i=0; i<slices.length; i++) {
+	        // Compute the start and stop angles
+	        startAngle = (int)(curValue * 360 / total);
+	        int arcAngle = (int)(slices[i].getValue() * 360 / total);
+
+	        // Ensure that rounding errors do not leave a gap between the first and last slice
+	        if (i == slices.length-1) {
+	            arcAngle = 360 - startAngle;
+	        }
+
+	        // Set the color and draw a filled arc
+	        g2.setColor(slices[i].getColor());
+	        g2.fillArc(area.x, area.y, area.width, area.height, startAngle, arcAngle);
+
+	        curValue += slices[i].getValue();
+	    }
+	    return bi;
+	}
+	
+	public static String writeImageToBase64(BufferedImage bi) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(bi, PropertiesUtil.getValue("graphics.type"), baos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		byte[] bytes = baos.toByteArray();
+		return Base64.encodeBase64String(bytes);
 	}
 	
 	public static void writeImage(File directory, String name, BufferedImage bi) {
@@ -138,7 +206,7 @@ public class GraphicUtil {
 		return builder.toString();
 	}
 	
-	public static BufferedImage Draw(int w, int h, Module module) {
+	public static BufferedImage draw(int w, int h, Module module) {
 		List<Dependency> dependents = module.getDependentList().getDependencies();
 		List<Dependency> dependencies = module.getDependencyList().getDependencies();
 		int centerX = w/2;
@@ -219,5 +287,4 @@ public class GraphicUtil {
 		
 		return bi;
 	}
-	
 }

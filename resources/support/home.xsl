@@ -27,7 +27,8 @@
 				<xsl:call-template name="header" />
 				<script type="text/javascript">
 					$(function(){
-					$('#tabs').tabs();
+						$('#tabs').tabs();
+						$('input#id_search').quicksearch('table#AllModules tbody tr');
 					});
  				</script>
 			</head>
@@ -78,11 +79,15 @@
 							</ul>
 						</div>
 						<div id="index">
-							<ul>
+							<form action="#">
+								Search: <input type="text" name="search" value="" id="id_search" placeholder="Search" />
+							</form>
+							<table id="AllModules" border="0" cellpadding="0" cellspacing="0">
 								<xsl:for-each select="//home/index/dependency">
 									<xsl:param name="indexDepLink"
 										select="concat(concat(@org, '/' ,@name), '/', @rev)" />
-									<li>
+									<tr>
+										<td>
 										<a href="{$indexDepLink}">
 											<xsl:value-of select="@org" />
 											/
@@ -90,28 +95,34 @@
 											/
 											<xsl:value-of select="@rev" />
 										</a>
-									</li>
+										</td>
+									</tr>
 								</xsl:for-each>
-							</ul>
+							</table>
 						</div>
 						<div id="health">
 							<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">Statistics:</div>
-							<table>
+							<table width="100%">
 								<tr>
-									<td>
+									<td valign="top">
 										<div>Total number of modules:</div>
 									</td>
-									<td>
+									<td valign="top">
 										<div style="margin-left: 10px;">
 											<xsl:value-of select="//home/health/moduleStats/@totalModules" />
 										</div>
 									</td>
+									<td valign="top" align="right" rowspan="2">
+										<xsl:param name="imgData" select="//home/health/piechart" />
+										<xsl:param name="mimeType" select="//home/health/piechart/@mimeType" />
+										<img src="data:{$mimeType};base64,{$imgData}" alt="Pie Chart" />
+									</td>
 								</tr>
 								<tr>
-									<td>
-										<div>Modules with unsatisfied dependencies:</div>
+									<td valign="top">
+										<div>Total unsatisfied dependencies:</div>
 									</td>
-									<td>
+									<td valign="top">
 										<div style="margin-left: 10px;">
 										<xsl:value-of
 											select="//home/health/moduleStats/@totalMissingDependencies" />

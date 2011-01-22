@@ -34,6 +34,7 @@ import com.procippus.ivy.model.Module;
 public class FileUtil {
 	public static List<Module> modules = new ArrayList<Module>();
 	public static List<Module> missingDependencies = new ArrayList<Module>();
+	public static List<Dependency> allMissingDependencies = new ArrayList<Dependency>();
 	
 	public static Map<File, List<File>> allDirectories = new HashMap<File, List<File>>();
 	
@@ -132,6 +133,7 @@ public class FileUtil {
 					File f = new File(filePath);
 					if (!f.exists()) {
 						dep.setMissing(Boolean.TRUE);
+						allMissingDependencies.add(dep);
 						isMissingDeps = Boolean.TRUE;
 					}
 					
