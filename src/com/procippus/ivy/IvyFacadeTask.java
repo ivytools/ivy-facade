@@ -21,6 +21,7 @@ import java.io.File;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
+import com.procippus.ivy.util.AssetsUtil;
 import com.procippus.ivy.util.FileUtil;
 import com.procippus.ivy.util.HTMLUtil;
 import com.procippus.ivy.util.PropertiesUtil;
@@ -51,18 +52,28 @@ public class IvyFacadeTask extends Task {
 				PropertiesUtil.setUserProperties(propertiesFile);
 			FileUtil.init();
 			
+			//Write out the assets directory structure first
+			out.println("Writing assets");
+			AssetsUtil.setPath(PropertiesUtil.getValue("assets.root.write"));
+			AssetsUtil.writeAssetsFromClasspath();
+			
+			//Read the IvyRepository
 			out.println(PropertiesUtil.getValue("msg.reading", ivyRoot));
 			FileUtil.readDirectoryStructure(ivyRootFile);
 			
+			//Generate dependency graph
 			out.println(PropertiesUtil.getValue("msg.dependents"));
 			FileUtil.createDependentGraph();
 			
+			//Generate directory HTML
+			out.println("Generating Directory HTML");
+			FileUtil.writeDirectoryFiles();
+			
+			//Generate Ivy HTML
 			out.println(PropertiesUtil.getValue("msg.create.ivy"));
 			FileUtil.writeIvyHtmlFiles();
 			
 			out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.modules.size()));
-			
-			out.println(PropertiesUtil.getValue("msg.finished"));
 		}
 	}
 	
