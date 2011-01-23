@@ -14,21 +14,18 @@ package com.procippus.ivy;
  * limitations under the License.
  */
 
-import static java.lang.System.out;
-
 import java.io.File;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import com.procippus.ivy.util.AssetsUtil;
 import com.procippus.ivy.util.FileUtil;
 import com.procippus.ivy.util.HTMLUtil;
 import com.procippus.ivy.util.PropertiesUtil;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class IvyFacadeTask extends Task {
 	private String ivyRoot;
@@ -48,32 +45,12 @@ public class IvyFacadeTask extends Task {
 			File ivyRootFile = new File(ivyRoot);
 			HTMLUtil.init(ivyRootFile);
 			PropertiesUtil.init();
+			
 			if (propertiesFile!=null) 
 				PropertiesUtil.setUserProperties(propertiesFile);
-			FileUtil.init();
-			
-			//Write out the assets directory structure first
-			out.println("Writing assets");
-			AssetsUtil.setPath(PropertiesUtil.getValue("assets.root.write"));
-			AssetsUtil.writeAssetsFromClasspath();
-			
-			//Read the IvyRepository
-			out.println(PropertiesUtil.getValue("msg.reading", ivyRoot));
-			FileUtil.readDirectoryStructure(ivyRootFile);
-			
-			//Generate dependency graph
-			out.println(PropertiesUtil.getValue("msg.dependents"));
-			FileUtil.createDependentGraph();
-			
-			//Generate directory HTML
-			out.println("Generating Directory HTML");
-			FileUtil.writeDirectoryFiles();
-			
-			//Generate Ivy HTML
-			out.println(PropertiesUtil.getValue("msg.create.ivy"));
-			FileUtil.writeIvyHtmlFiles();
-			
-			out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.modules.size()));
+
+			ExecutionStrategy ex = new ExecutionStrategy();
+			ex.execute(ivyRoot);
 		}
 	}
 	

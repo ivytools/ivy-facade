@@ -20,7 +20,7 @@ import java.util.Properties;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class PropertiesUtil {
 	private static final String DEFAULT_PROPS_FILE = "support/ivyfacade-default.properties";
@@ -87,4 +87,9 @@ public class PropertiesUtil {
 	
 	public static final String KEY_FIL_IGNORE = "files.ignore";
 	public static final String KEY_IVY_PATTERNS = "files.ivy.patterns";
+	
+	public static final String KEY_GRAPHIC_WIDTH = "graphics.width";
+	public static final String KEY_GRAPHIC_HEIGHT = "graphics.height";
+	
+	public static final String KEY_HTML_DEFAULT = "default.html.file.name";
 }

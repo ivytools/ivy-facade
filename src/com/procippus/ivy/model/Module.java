@@ -22,10 +22,15 @@ import nu.xom.Elements;
 import com.procippus.ivy.util.PropertiesUtil;
 
 /**
+ * This is the container class for all things Ivy and represents the
+ * primary transfer object in the system.
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Module implements Comparable<Module> {
+public class Module implements Comparable<Module>, ElementAdapter  {
+	private static final long serialVersionUID = 3689637244502107166L;
+
 	String filePath;
 	
 	String base64Image;
@@ -120,9 +125,22 @@ public class Module implements Comparable<Module> {
 	public static final String EL_IVY_MOD = "ivy-module";
 	private static final String ATTR_MISSING_DEPS = "missingDependencies";
 	private static final String EL_IMAGE = "image";
+	
+	private static final String XSI ="xsi";
+	private static final String XSI_URL = "http://www.w3.org/2001/XMLSchema-instance";
+	private static final String ATTR_NO_NS = "xsi:noNamespaceSchemaLocation";
+	private static final String IVY_XSD = "http://incubator.apache.org/ivy/schemas/ivy.xsd";
+	private static final String ATTR_VERSION = "version";
+	private static final String VAL_VERSION_NUM = "1.3";
+	
+	//xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	//xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd" version="1.3"
 
 	public Element toElement() {
 		Element e = new Element(EL_IVY_MOD);
+		e.addAttribute(new Attribute(ATTR_VERSION, VAL_VERSION_NUM));
+		e.addNamespaceDeclaration(XSI, XSI_URL);
+		e.addAttribute(new Attribute(ATTR_NO_NS, XSI_URL, IVY_XSD));
 		
 		e.addAttribute(new Attribute(ATTR_MISSING_DEPS, isMissingDependencies().toString()));
 		

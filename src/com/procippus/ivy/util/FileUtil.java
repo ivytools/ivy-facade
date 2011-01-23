@@ -29,7 +29,7 @@ import com.procippus.ivy.model.Module;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class FileUtil {
 	public static List<Module> modules = new ArrayList<Module>();

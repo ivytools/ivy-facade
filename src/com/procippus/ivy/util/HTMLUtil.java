@@ -32,10 +32,10 @@ import com.procippus.ivy.model.Module;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class HTMLUtil {
-	private static final String INDEX = "index.html";
+	private static String INDEX = null;
 	private static final String FULL_PATH = "FULL_PATH";
 	private static final String ORG = "ORG";
 	private static final String MOD = "MOD";
@@ -45,6 +45,7 @@ public class HTMLUtil {
 	
 	public static void init(File ivyRoot) {
 		HTMLUtil.ivyRoot = ivyRoot;
+		INDEX = PropertiesUtil.getValue(PropertiesUtil.KEY_HTML_DEFAULT);
 	}
 	
 	private static void writeIndexFile(String path, String content) {
@@ -63,10 +64,10 @@ public class HTMLUtil {
 		Document stylesheet;
 		try {
 			//Create the image
-			int width = Integer.parseInt(PropertiesUtil.getValue("graphics.width"));
-			int height = Integer.parseInt(PropertiesUtil.getValue("graphics.height"));
+			int width = Integer.parseInt(PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_WIDTH));
+			int height = Integer.parseInt(PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_HEIGHT));
 			
-			BufferedImage bi = GraphicUtil.draw(width, height, ivyFile);
+			BufferedImage bi = GraphicUtil.drawDependencyGraph(width, height, ivyFile);
 			ivyFile.setBase64Image(GraphicUtil.writeImageToBase64(bi));
 			
 			File f = new File(ivyFile.getFilePath());

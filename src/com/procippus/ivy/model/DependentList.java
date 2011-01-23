@@ -20,10 +20,14 @@ import nu.xom.Element;
 import nu.xom.Elements;
 
 /**
+ * A collection of dependent classes, used for mapping (OXM)
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class DependentList {
+public class DependentList implements ElementAdapter {
+	private static final long serialVersionUID = 1622942978029174279L;
+
 	public static final String EL_DEPENDENTS = "dependents";
 	
 	List<Dependency> dependencies = new ArrayList<Dependency>();

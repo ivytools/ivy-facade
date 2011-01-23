@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class AssetsUtil {
 	static final String[] FILES = {
@@ -63,9 +63,7 @@ public class AssetsUtil {
 				FileOutputStream fos = new FileOutputStream(f);
 				byte buf[]=new byte[1024];
 			    int len;
-			    while((len=is.read(buf))>0) {
-			    	fos.write(buf,0,len);
-			    }
+			    while((len=is.read(buf))>0) { fos.write(buf,0,len); }
 			    fos.close();
 			    is.close();
 			} catch (Exception e) {

@@ -20,10 +20,14 @@ import nu.xom.Element;
 import nu.xom.Elements;
 
 /**
+ * A Collection of dependencies, usde for mapping purposes.
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class DependencyList {
+public class DependencyList implements ElementAdapter {
+	private static final long serialVersionUID = -2178636806376738513L;
+
 	public static final String EL_DEPENDENCIES = "dependencies";
 	
 	List<Dependency> dependencies = new ArrayList<Dependency>();

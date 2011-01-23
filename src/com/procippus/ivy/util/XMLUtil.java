@@ -37,7 +37,7 @@ import com.procippus.ivy.model.PieValue;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class XMLUtil {
 	static final SimpleDateFormat sdf = new SimpleDateFormat(PropertiesUtil.getValue("default.date.format"));

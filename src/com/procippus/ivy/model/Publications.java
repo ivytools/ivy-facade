@@ -20,10 +20,13 @@ import nu.xom.Element;
 import nu.xom.Elements;
 
 /**
+ * A publication is a list of artifacts for a given Ivy project.
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Publications {
+public class Publications implements ElementAdapter {
+	private static final long serialVersionUID = 9003914813891505533L;
 	static final String EL_PUBLICATIONS = "publications";
 	List<Artifact> artifacts = new ArrayList<Artifact>();
 	public void addArtifact(Artifact artifact) {

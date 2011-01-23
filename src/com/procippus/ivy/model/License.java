@@ -18,55 +18,34 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 /**
- * Represents the Artifact type from Ivy
+ * Represents the License element from Ivy, may develop more as
+ * there are several name / url elements in Ivy.
  * 
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Artifact implements ElementAdapter {
-	private static final long serialVersionUID = 5533323560021523994L;
-	public static final String EL_ATTRIBUTE = "artifact";
-	static final String ATTR_NAME = "name";
-	static final String ATTR_TYPE = "type";
-	static final String ATTR_EXT = "ext";
-	
+public class License implements ElementAdapter {
+	private static final long serialVersionUID = -7878108728402728855L;
 	String name;
-	String type;
-	String ext;
-	
-	public Artifact() {}
-	
-	public Artifact(String name, String type, String ext) {
-		this.name = name;
-		this.type = type;
-		this.ext = ext;
-	}
-	
+	String url;
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getType() {
-		return type;
+	public String getUrl() {
+		return url;
 	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public String getExt() {
-		return ext;
-	}
-	public void setExt(String ext) {
-		this.ext = ext;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((ext == null) ? 0 : ext.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
 	@Override
@@ -77,39 +56,36 @@ public class Artifact implements ElementAdapter {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Artifact other = (Artifact) obj;
-		if (ext == null) {
-			if (other.ext != null)
-				return false;
-		} else if (!ext.equals(other.ext))
-			return false;
+		License other = (License) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (type == null) {
-			if (other.type != null)
+		if (url == null) {
+			if (other.url != null)
 				return false;
-		} else if (!type.equals(other.type))
+		} else if (!url.equals(other.url))
 			return false;
 		return true;
 	}
 	
+	public static final String EL_LICENSE = "license";
+	public static final String ATTR_NAME = "name";
+	public static final String ATTR_URL = "url";
 	public void fromElement(Element e) {
 		this.name = e.getAttributeValue(ATTR_NAME);
-		this.type = e.getAttributeValue(ATTR_TYPE);
-		this.ext = e.getAttributeValue(ATTR_EXT);
+		this.url = e.getAttributeValue(ATTR_URL);
 	}
 	
 	public Element toElement() {
-		Element e = new Element(EL_ATTRIBUTE);
-			if (name != null)
-				e.addAttribute(new Attribute(ATTR_NAME, name));
-			if (type != null)
-				e.addAttribute(new Attribute(ATTR_TYPE, type));
-			if (ext != null)
-				e.addAttribute(new Attribute(ATTR_EXT, ext));
-		return e;
+		Element license = new Element(EL_LICENSE);
+		license.addAttribute(new Attribute(ATTR_NAME, name));
+		license.addAttribute(new Attribute(ATTR_URL, url));
+		return license;
+	}
+	
+	public boolean isValid() {
+		return (name != null && name.trim().length()>0 && url != null && url.trim().length() >0);
 	}
 }

@@ -15,13 +15,19 @@ package com.procippus.ivy.model;
  */
 import nu.xom.Attribute;
 import nu.xom.Element;
+import nu.xom.Elements;
 
 /**
+ * Possibly the most import class, this represents the meat of
+ * Ivy. Most critical attributes of a module are found here.
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Info implements Comparable<Info> {
+public class Info implements Comparable<Info>, ElementAdapter  {
+	private static final long serialVersionUID = 6294884580423272431L;
 	public static final String EL_INFO = "info";
+	public static final String EL_DESCRIPTION = "description";
 	static final String ATTR_ORG = "organisation";
 	static final String ATTR_MOD = "module";
 	static final String ATTR_REV = "revision";
@@ -33,6 +39,10 @@ public class Info implements Comparable<Info> {
 	String revision;
 	String status; 
 	String publication;
+	
+	//This is a sub element, but no reason to create an object
+	String description;
+	License license = new License();
 	
 	public Info() {}
 	
@@ -76,6 +86,22 @@ public class Info implements Comparable<Info> {
 	public void setPublication(String publication) {
 		this.publication = publication;
 	}
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public License getLicense() {
+		return license;
+	}
+
+	public void setLicense(License license) {
+		this.license = license;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -120,6 +146,18 @@ public class Info implements Comparable<Info> {
 		this.revision = e.getAttributeValue(ATTR_REV);
 		this.status = e.getAttributeValue(ATTR_STAT);
 		this.publication = e.getAttributeValue(ATTR_PUB);
+		Elements desElements = e.getChildElements(EL_DESCRIPTION);
+		if (desElements.size()==1) {
+			Element description = desElements.get(0);
+			this.description = description.getValue();
+		}
+		Elements licElements = e.getChildElements(License.EL_LICENSE);
+		if (licElements.size()>0) {
+			Element lic = licElements.get(0);
+			License l = new License();
+			l.fromElement(lic);
+			this.license=l;
+		}
 	}
 	
 	public Element toElement() {
@@ -129,6 +167,15 @@ public class Info implements Comparable<Info> {
 			root.addAttribute(new Attribute(ATTR_REV, revision));
 			root.addAttribute(new Attribute(ATTR_STAT, status));
 			root.addAttribute(new Attribute(ATTR_PUB, publication));
+			
+		if (this.description != null) {
+			Element elDescription = new Element(EL_DESCRIPTION);
+			elDescription.appendChild(this.description);
+			root.appendChild(elDescription);
+		}
+		if (this.license != null && this.license.isValid()) {
+			root.appendChild(license.toElement());
+		}
 		return root;
 	}
 	

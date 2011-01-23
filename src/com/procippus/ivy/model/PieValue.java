@@ -14,13 +14,19 @@ package com.procippus.ivy.model;
  * limitations under the License.
  */
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
+ * This is a derived work, with no one to actual cite.
+ * Example based on inner class found at: http://www.exampledepot.com/egs/java.awt/Pie.html
+ * 
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class PieValue {
-    double value;
+public class PieValue implements Serializable {
+	private static final long serialVersionUID = -1635165974214061436L;
+	double value;
     Color color;
     public PieValue(double value, Color color) {
         this.value = value;

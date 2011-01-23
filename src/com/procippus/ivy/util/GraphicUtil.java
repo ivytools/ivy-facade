@@ -38,7 +38,7 @@ import com.procippus.ivy.model.PieValue;
 
 /**
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class GraphicUtil {
 	static final int BASE_SIXTEEN = 16;
@@ -206,7 +206,7 @@ public class GraphicUtil {
 		return builder.toString();
 	}
 	
-	public static BufferedImage draw(int w, int h, Module module) {
+	public static BufferedImage drawDependencyGraph(int w, int h, Module module) {
 		List<Dependency> dependents = module.getDependentList().getDependencies();
 		List<Dependency> dependencies = module.getDependencyList().getDependencies();
 		int centerX = w/2;

@@ -20,10 +20,16 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 /**
+ * 
+ * Represents an Ivy dependency, this would be better written
+ * as a derived class, but the weight of the class does not
+ * dictate such a measure.
+ * 
  * @author Procippus, LLC
- * @author Ryan McGuinness
+ * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Dependency implements Comparable<Dependency> {
+public class Dependency implements Comparable<Dependency>, ElementAdapter  {
+	private static final long serialVersionUID = 6121477345687882481L;
 	public static final String EL_DEPENDENCY = "dependency";
 	static final String ATTR_ORG = "org";
 	static final String ATTR_NAME = "name";
