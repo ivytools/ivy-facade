@@ -50,10 +50,13 @@
             <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar,commons-codec-1.4.0.jar"/>
         </jar>
 
-        <jar destfile="${dist.dir}/IvyFacade-${build.number}-sources.jar">
+        <jar destfile="${dist.dir}/IvyFacade-sources-${build.number}.jar">
             <fileset dir="${resources.dir}" />
             <fileset dir="${src.dir}" />
         </jar>
+    	
+    	<copy file="resources/license.txt" tofile="${dist.dir}/IvyFacade-license-${build.number}.txt" />
+    	<copy file="resources/notice.txt" tofile="${dist.dir}/IvyFacade-notice-${build.number}.txt" />
     	
     	<!--
     	<gcupload 
@@ -67,5 +70,12 @@
     	
     	
     </target>
+	
+	<target name="publish" depends="dist">
+		<ivy:retrieve /> 
+		<ivy:publish resolver="local" pubrevision="${build.number}" overwrite="true"> 
+		   <artifacts pattern="build/dist/[artifact]-[revision].[ext]" /> 
+		</ivy:publish>
+	</target>
 
 </project>

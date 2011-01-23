@@ -1,8 +1,19 @@
 <?xml version="1.0" ?>
 <ivy-module version="2.0">
-    <info organisation="com.procippus" module="IvyFacade"/>
-     <publications>
-    	<artifact name="IvyHTMLBuilder" />
+    <info organisation="com.procippus" module="IvyFacade" revision="1.0.13" status="release" publication="20110122120000">
+        <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+        <ivyauthor name="Ryan McGuinness" url="http://www.procippus.com/"/>
+        <description homepage="http://code.google.com/p/ivy-facade/">
+            Ivy Facade is a front-end for an ivy repository. It read the repository and creates a browsable tree in the repository.
+       		It also created an at-a-glance repository health report as well as a simple search mechanism. Ivy Facade is a product
+       		built out of the necessity of running Ivy in an enterprise setting.
+        </description>
+    </info>
+    <publications>
+    	<artifact name="IvyFacade" type="jar" conf="default" />
+    	<artifact name="IvyFacade-sources" type="src" ext="jar" conf="default" />
+    	<artifact name="IvyFacade-license" type="license" ext="txt" conf="default" />
+    	<artifact name="IvyFacade-notice" type="license" ext="txt" conf="default" />
     </publications>
     <dependencies>
     	<dependency org="nu" name="xom" rev="1.2.6"  />
