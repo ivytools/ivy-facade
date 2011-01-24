@@ -32,6 +32,10 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 import nu.xom.xslt.XSLTransform;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.procippus.ivy.adapter.ModuleAdapter;
 import com.procippus.ivy.model.Module;
 import com.procippus.ivy.model.PieValue;
 
@@ -40,6 +44,9 @@ import com.procippus.ivy.model.PieValue;
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class XMLUtil {
+	static Logger logger = LoggerFactory.getLogger(XMLUtil.class);
+	private static ModuleAdapter moduleAdapter = new ModuleAdapter();
+	
 	static final SimpleDateFormat sdf = new SimpleDateFormat(PropertiesUtil.getValue("default.date.format"));
 	static final Date processTime = new Date();
 	
@@ -154,7 +161,7 @@ public class XMLUtil {
 		
 		Element missing = new Element("missing");
 		for (Module m : FileUtil.missingDependencies) {
-			missing.appendChild(m.toDependencyElement());
+			missing.appendChild(moduleAdapter.toDependencyElement(m));
 		}
 		health.appendChild(missing);
 		health.appendChild(createPieChart());
@@ -162,7 +169,7 @@ public class XMLUtil {
 		
 		Element index = new Element("index");
 		for (Module m : FileUtil.modules) {
-			index.appendChild(m.toDependencyElement());
+			index.appendChild(moduleAdapter.toDependencyElement(m));
 		}
 		root.appendChild(index);
 		
@@ -176,10 +183,9 @@ public class XMLUtil {
 	}
 	
 	public static Module parseIvyFile(File ivy, Document ivyDoc) {
-		Module i = new Module();
-		i.setFilePath(ivy.getPath());
-		i.fromElement(ivyDoc.getRootElement());
-		return i;
+		Module module = moduleAdapter.fromElement(ivyDoc.getRootElement());
+		module.setFilePath(ivy.getPath());
+		return module;
 	}
 	
 	public static Module parseIvyFile(File ivy) {
@@ -190,7 +196,7 @@ public class XMLUtil {
 			ivyDoc = builder.build(ivy);
 			ivyFile = parseIvyFile(ivy, ivyDoc);
 		} catch (Exception e) {
-			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivy.getPath()));
+			logger.error(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivy.getPath()));
 		}
 		return ivyFile;
 	}

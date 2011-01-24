@@ -18,11 +18,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class PropertiesUtil {
+	private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 	private static final String DEFAULT_PROPS_FILE = "support/ivyfacade-default.properties";
 	private static Properties defaultProperties;
 	private static Properties userProperties;
@@ -38,7 +42,7 @@ public class PropertiesUtil {
 	
 	public static void setUserProperties(String userPropertiesPath) {
 		if (userPropertiesPath != null && userPropertiesPath.trim().length() > 0) {
-			//System.out.println("Getting Property from user defined properties: " + userPropertiesPath);
+			logger.debug("Getting Property from user defined properties: " + userPropertiesPath);
 			File userPropertiesFile = new File(userPropertiesPath);
 			if (userPropertiesFile.exists() && userPropertiesFile.isFile() && userPropertiesFile.canRead()) {
 				FileInputStream fis;

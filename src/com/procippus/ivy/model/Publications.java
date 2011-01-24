@@ -13,11 +13,9 @@ package com.procippus.ivy.model;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import nu.xom.Element;
-import nu.xom.Elements;
 
 /**
  * A publication is a list of artifacts for a given Ivy project.
@@ -25,29 +23,14 @@ import nu.xom.Elements;
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Publications implements ElementAdapter {
+public class Publications implements Serializable {
 	private static final long serialVersionUID = 9003914813891505533L;
-	static final String EL_PUBLICATIONS = "publications";
 	List<Artifact> artifacts = new ArrayList<Artifact>();
 	public void addArtifact(Artifact artifact) {
 		if (!artifacts.contains(artifact)) 
 			artifacts.add(artifact);
 	}
-	
-	public void fromElement(Element e) {
-		Elements elements = e.getChildElements();
-		for (int i=0; i<elements.size();i++) {
-			Artifact a = new Artifact();
-			a.fromElement(elements.get(i));
-			addArtifact(a);
-		}
-	}
-	
-	public Element toElement() {
-		Element e = new Element(EL_PUBLICATIONS);
-		for (Artifact a : artifacts) {
-			e.appendChild(a.toElement());
-		}
-		return e;
+	public List<Artifact> getArtifacts() {
+		return artifacts;
 	}
 }

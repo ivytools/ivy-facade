@@ -1,4 +1,7 @@
 package com.procippus.ivy.model;
+
+import java.io.Serializable;
+
 /*
  * 
  * Copyright 2011 Procippus, LLC
@@ -14,22 +17,15 @@ package com.procippus.ivy.model;
  * limitations under the License.
  */
 
-import nu.xom.Attribute;
-import nu.xom.Element;
-
 /**
  * Represents the Artifact type from Ivy
  * 
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Artifact implements ElementAdapter {
+public class Artifact implements Serializable {
 	private static final long serialVersionUID = 5533323560021523994L;
-	public static final String EL_ATTRIBUTE = "artifact";
-	static final String ATTR_NAME = "name";
-	static final String ATTR_TYPE = "type";
-	static final String ATTR_EXT = "ext";
-	
+
 	String name;
 	String type;
 	String ext;
@@ -94,22 +90,5 @@ public class Artifact implements ElementAdapter {
 		} else if (!type.equals(other.type))
 			return false;
 		return true;
-	}
-	
-	public void fromElement(Element e) {
-		this.name = e.getAttributeValue(ATTR_NAME);
-		this.type = e.getAttributeValue(ATTR_TYPE);
-		this.ext = e.getAttributeValue(ATTR_EXT);
-	}
-	
-	public Element toElement() {
-		Element e = new Element(EL_ATTRIBUTE);
-			if (name != null)
-				e.addAttribute(new Attribute(ATTR_NAME, name));
-			if (type != null)
-				e.addAttribute(new Attribute(ATTR_TYPE, type));
-			if (ext != null)
-				e.addAttribute(new Attribute(ATTR_EXT, ext));
-		return e;
 	}
 }

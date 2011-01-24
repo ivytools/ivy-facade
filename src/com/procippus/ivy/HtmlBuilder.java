@@ -15,7 +15,8 @@ package com.procippus.ivy;
  * limitations under the License.
  */
 
-import static java.lang.System.out;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.procippus.ivy.util.PropertiesUtil;
 
@@ -24,6 +25,7 @@ import com.procippus.ivy.util.PropertiesUtil;
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class HtmlBuilder {
+	private static Logger logger = LoggerFactory.getLogger(HtmlBuilder.class);
 
 	/**
 	 * HtmlBuilder is the main class of the Ivy Facade project. This class will
@@ -33,18 +35,14 @@ public class HtmlBuilder {
 	 * 
 	 * Usage:
 	 * 
-	 * @param ivyRootDirectory
-	 *            the ivy root directory
-	 *            
-	 * @param propertiesFile
-	 * 			  a properties override file
+	 * @param args ivyRootDirectory <propertiesFile>
 	 * 
 	 */
 	public static void main(String[] args) {
 		PropertiesUtil.init();
 		
 		if (args == null || args.length < 1) {
-			out.println(PropertiesUtil.getValue("err.usage"));
+			logger.error(PropertiesUtil.getValue("err.usage"));
 		} else {
 			String ivyRoot = args[0];
 			String propertiesFileName = null;

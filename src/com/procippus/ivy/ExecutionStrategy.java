@@ -14,9 +14,10 @@ package com.procippus.ivy;
  * limitations under the License.
  */
 
-import static java.lang.System.out;
-
 import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.procippus.ivy.util.AssetsUtil;
 import com.procippus.ivy.util.FileUtil;
@@ -28,12 +29,13 @@ import com.procippus.ivy.util.PropertiesUtil;
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class ExecutionStrategy {
+	private static Logger logger = LoggerFactory.getLogger(ExecutionStrategy.class);
 	private File ivyRootDirectory = null;
 	
 	private void validateIvyRoot(String ivyRoot) {
 		ivyRootDirectory = new File(ivyRoot);
 		if (!ivyRootDirectory.exists() || !ivyRootDirectory.isDirectory() || !ivyRootDirectory.canRead()) {
-			out.println("Unable to read ivy root: " + ivyRoot);
+			logger.error("Unable to read ivy root: " + ivyRoot);
 			ivyRootDirectory = null;
 		}
 	}
@@ -48,31 +50,31 @@ public class ExecutionStrategy {
 			FileUtil.init();
 			
 			//Write out the assets directory structure first
-			out.println("Writing assets");
+			logger.info("Writing assets");
 			AssetsUtil.setPath(PropertiesUtil.getValue("assets.root.write"));
 			AssetsUtil.writeAssetsFromClasspath();
 			
 			//Read the IvyRepository
-			out.println(PropertiesUtil.getValue("msg.reading", ivyRoot));
+			logger.info(PropertiesUtil.getValue("msg.reading", ivyRoot));
 			FileUtil.readDirectoryStructure(ivyRootDirectory);
 			
 			//Generate dependency graph
-			out.println(PropertiesUtil.getValue("msg.dependents"));
+			logger.info(PropertiesUtil.getValue("msg.dependents"));
 			FileUtil.createDependentGraph();
 			
 			//Generate directory HTML
-			out.println("Generating Directory HTML");
+			logger.info("Generating Directory HTML");
 			FileUtil.writeDirectoryFiles();
 			
 			//Generate Ivy HTML
-			out.println(PropertiesUtil.getValue("msg.create.ivy"));
+			logger.info(PropertiesUtil.getValue("msg.create.ivy"));
 			FileUtil.writeIvyHtmlFiles();
 			
-			out.println(PropertiesUtil.getValue("msg.create.total", FileUtil.modules.size()));
+			logger.info(PropertiesUtil.getValue("msg.create.total", FileUtil.modules.size()));
 			
 		} else {
-			out.println(PropertiesUtil.getValue("err.process", ivyRootDirectory.getPath()));
+			logger.error(PropertiesUtil.getValue("err.process", ivyRootDirectory.getPath()));
 		}
-		out.println(PropertiesUtil.getValue("msg.finished"));
+		logger.info(PropertiesUtil.getValue("msg.finished"));
 	}
 }

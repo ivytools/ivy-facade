@@ -14,8 +14,6 @@ package com.procippus.ivy.util;
  * limitations under the License.
  */
 
-import static java.lang.System.out;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -28,6 +26,10 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.ParsingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.procippus.ivy.adapter.ModuleAdapter;
 import com.procippus.ivy.model.Module;
 
 /**
@@ -35,6 +37,9 @@ import com.procippus.ivy.model.Module;
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class HTMLUtil {
+	private static Logger logger = LoggerFactory.getLogger(HTMLUtil.class);
+	private static ModuleAdapter moduleAdapter = new ModuleAdapter();
+	
 	private static String INDEX = null;
 	private static final String FULL_PATH = "FULL_PATH";
 	private static final String ORG = "ORG";
@@ -74,16 +79,15 @@ public class HTMLUtil {
 			Builder builder = new Builder();
 			stylesheet = builder.build(styleSheet);
 			
-			ivyDoc = new Document(ivyFile.toElement());
+			ivyDoc = new Document(moduleAdapter.toElement(ivyFile));
 
 			Document result = XMLUtil.transform(stylesheet, ivyDoc, null);
 			writeIndexFile(f.getParent() + File.separatorChar + INDEX, result.toXML());			
 		} catch (ParsingException ex) {
-			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivyFile.getFilePath()));
+			logger.error(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivyFile.getFilePath()));
 		} catch (IOException ex) {
-			ex.printStackTrace();
-			System.err.println(ivyFile.getFilePath());
-			System.err.println(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_IO));
+			logger.error(ivyFile.getFilePath());
+			logger.error(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_IO), ex);
 		}
 	}
 	
@@ -129,7 +133,7 @@ public class HTMLUtil {
 				Document result = XMLUtil.transform(stylesheet, directoriesAsXml, params);
 				writeIndexFile(directory.getPath() + File.separatorChar + "index.html", result.toXML());
 			} catch (Exception e) {
-				out.println("Error while transforming: " + directoriesAsXml);
+				logger.error("Error while transforming: " + directoriesAsXml);
 			}
 		}
 	}

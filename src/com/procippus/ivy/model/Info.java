@@ -1,21 +1,6 @@
 package com.procippus.ivy.model;
-/*
- * 
- * Copyright 2011 Procippus, LLC
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 		http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import nu.xom.Attribute;
-import nu.xom.Element;
-import nu.xom.Elements;
+
+import java.io.Serializable;
 
 /**
  * Possibly the most import class, this represents the meat of
@@ -24,15 +9,8 @@ import nu.xom.Elements;
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Info implements Comparable<Info>, ElementAdapter  {
+public class Info implements Comparable<Info>, Serializable {
 	private static final long serialVersionUID = 6294884580423272431L;
-	public static final String EL_INFO = "info";
-	public static final String EL_DESCRIPTION = "description";
-	static final String ATTR_ORG = "organisation";
-	static final String ATTR_MOD = "module";
-	static final String ATTR_REV = "revision";
-	static final String ATTR_STAT = "status";
-	static final String ATTR_PUB = "publication";
 	
 	String organization;
 	String module;
@@ -138,45 +116,6 @@ public class Info implements Comparable<Info>, ElementAdapter  {
 		} else if (!revision.equals(other.revision))
 			return false;
 		return true;
-	}
-	
-	public void fromElement(Element e) {
-		this.organization = e.getAttributeValue(ATTR_ORG);
-		this.module = e.getAttributeValue(ATTR_MOD);
-		this.revision = e.getAttributeValue(ATTR_REV);
-		this.status = e.getAttributeValue(ATTR_STAT);
-		this.publication = e.getAttributeValue(ATTR_PUB);
-		Elements desElements = e.getChildElements(EL_DESCRIPTION);
-		if (desElements.size()==1) {
-			Element description = desElements.get(0);
-			this.description = description.getValue();
-		}
-		Elements licElements = e.getChildElements(License.EL_LICENSE);
-		if (licElements.size()>0) {
-			Element lic = licElements.get(0);
-			License l = new License();
-			l.fromElement(lic);
-			this.license=l;
-		}
-	}
-	
-	public Element toElement() {
-		Element root = new Element(EL_INFO);
-			root.addAttribute(new Attribute(ATTR_ORG, organization));
-			root.addAttribute(new Attribute(ATTR_MOD, module));
-			root.addAttribute(new Attribute(ATTR_REV, revision));
-			root.addAttribute(new Attribute(ATTR_STAT, status));
-			root.addAttribute(new Attribute(ATTR_PUB, publication));
-			
-		if (this.description != null) {
-			Element elDescription = new Element(EL_DESCRIPTION);
-			elDescription.appendChild(this.description);
-			root.appendChild(elDescription);
-		}
-		if (this.license != null && this.license.isValid()) {
-			root.appendChild(license.toElement());
-		}
-		return root;
 	}
 	
 	@Override

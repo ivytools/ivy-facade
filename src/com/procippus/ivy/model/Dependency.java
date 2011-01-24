@@ -15,9 +15,7 @@ package com.procippus.ivy.model;
  */
 
 import java.io.File;
-
-import nu.xom.Attribute;
-import nu.xom.Element;
+import java.io.Serializable;
 
 /**
  * 
@@ -28,13 +26,8 @@ import nu.xom.Element;
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
-public class Dependency implements Comparable<Dependency>, ElementAdapter  {
+public class Dependency implements Comparable<Dependency>, Serializable {
 	private static final long serialVersionUID = 6121477345687882481L;
-	public static final String EL_DEPENDENCY = "dependency";
-	static final String ATTR_ORG = "org";
-	static final String ATTR_NAME = "name";
-	static final String ATTR_REV = "rev";
-	static final String ATTR_MISSING = "missing";
 	
 	String org;
 	String name; 
@@ -117,22 +110,6 @@ public class Dependency implements Comparable<Dependency>, ElementAdapter  {
 		return true;
 	}
 	
-	public void fromElement(Element e) {
-		this.name = e.getAttributeValue(ATTR_NAME);
-		this.org = e.getAttributeValue(ATTR_ORG);
-		this.rev = e.getAttributeValue(ATTR_REV);
-	}
-	
-	public Element toElement() {
-		Element root = new Element(EL_DEPENDENCY);
-			root.addAttribute(new Attribute(ATTR_ORG, org));
-			root.addAttribute(new Attribute(ATTR_NAME, name));
-			root.addAttribute(new Attribute(ATTR_REV, rev));
-			if (missing==Boolean.TRUE) {
-				root.addAttribute(new Attribute(ATTR_MISSING, missing.toString()));
-			}
-		return root;
-	}
 	@Override
 	public int compareTo(Dependency o) {
 		return (o!=null) ? name.compareTo(o.name) : 0;

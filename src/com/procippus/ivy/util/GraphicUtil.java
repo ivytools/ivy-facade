@@ -83,8 +83,8 @@ public class GraphicUtil {
 		FontMetrics m = g2.getFontMetrics();
 		
 
-		int left = (int)((w/2) - (m.stringWidth(text)/2));
-		int top = (int)(h/2)+12; // - (m.getHeight()/2));
+		int left = ((w/2) - (m.stringWidth(text)/2));
+		int top = (h/2)+12; // - (m.getHeight()/2));
 		g2.drawString(text, left, top);
 	}
 	

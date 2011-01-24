@@ -15,13 +15,14 @@ package com.procippus.ivy.util;
  * limitations under the License.
  */
 
-import static java.lang.System.out;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.procippus.ivy.model.Dependency;
 import com.procippus.ivy.model.Info;
@@ -32,6 +33,7 @@ import com.procippus.ivy.model.Module;
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
  */
 public class FileUtil {
+	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 	public static List<Module> modules = new ArrayList<Module>();
 	public static List<Module> missingDependencies = new ArrayList<Module>();
 	public static List<Dependency> allMissingDependencies = new ArrayList<Dependency>();
@@ -62,11 +64,13 @@ public class FileUtil {
 	public static boolean validateIvyRoot(String ivyRoot) {
 		File ivyRootDirectory = new File(ivyRoot);
 		if (!ivyRootDirectory.exists() || !ivyRootDirectory.isDirectory() || !ivyRootDirectory.canRead()) {
-			out.println("Unable to read ivy root: " + ivyRoot);
+			logger.error("Unable to read ivy root: " + ivyRoot);
 			return false;
 		}
 		return true;
 	}
+	
+	
 	
 	public static void readDirectoryStructure(File directory) {
 		if (ignoreFiles == null || ivyMatchPattern == null) {

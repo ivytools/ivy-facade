@@ -39,6 +39,7 @@ public class IvyFacadeTask extends Task {
 		this.propertiesFile = propertiesFile;
 	}
 	
+	@Override
 	public void execute() throws BuildException {
 		boolean validRoot = FileUtil.validateIvyRoot(ivyRoot);
 		if (validRoot) {
