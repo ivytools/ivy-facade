@@ -94,8 +94,9 @@
 		    <doctitle><![CDATA[<h1>Ivy Facade</h1>]]></doctitle>
 		    <bottom><![CDATA[<i>Copyright &#169; 2011 Procippus LLC. All Rights Reserved.</i>]]></bottom>
 		    <tag name="todo" scope="all" description="To do:"/>
-			<group title="Core" packages="com.procippus.ivy.*" />
+			<group title="Core" packages="com.procippus.ivy*" />
 		    <group title="Model" packages="com.procippus.ivy.model*"/>
+			<group title="Adapters" packages="com.procippus.ivy.adapter*"/>
 		    <group title="Utilities" packages="com.procippus.ivy.util*"/>
 		  </javadoc>
 		
