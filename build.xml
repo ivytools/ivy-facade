@@ -43,11 +43,11 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="com.procippus.ivy.HtmlBuilder"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar commons-codec-1.4.0.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar commons-codec-1.4.0.jar slf4j-api-1.6.1.jar slf4j-simple-1.6.1.jar"/>
             </manifest>
             <zipfileset src="${ivy.lib.dir}/jar-in-jar-loader-1.3.0.zip"/>
             <fileset dir="${compile.target}"/>
-            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar,commons-codec-1.4.0.jar"/>
+            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar,commons-codec-1.4.0.jar,slf4j-api-1.6.1.jar,slf4j-simple-1.6.1.jar"/>
         </jar>
 
         <jar destfile="${dist.dir}/IvyFacade-sources-${build.number}.jar">
@@ -57,6 +57,8 @@
     	
     	<copy file="resources/license.txt" tofile="${dist.dir}/IvyFacade-license-${build.number}.txt" />
     	<copy file="resources/notice.txt" tofile="${dist.dir}/IvyFacade-notice-${build.number}.txt" />
+    	
+    	<antcall target="docs" inheritall="true" />
     	
     	<!--
     	<gcupload 
@@ -74,8 +76,32 @@
 	<target name="publish" depends="dist">
 		<ivy:retrieve /> 
 		<ivy:publish resolver="local" pubrevision="${build.number}" overwrite="true"> 
-		   <artifacts pattern="build/dist/[artifact]-[revision].[ext]" /> 
+		   <artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" /> 
 		</ivy:publish>
+	</target>
+	
+	<target name="docs">
+		<mkdir dir="${docs.dir}" />
+		<javadoc packagenames="com.procippus.*"
+			       classpathref="libraries"
+		           sourcepath="src"
+		           defaultexcludes="yes"
+		           destdir="${docs.dir}"
+		           author="true"
+		           version="true"
+		           use="true"
+		           windowtitle="Ivy Facade API">
+		    <doctitle><![CDATA[<h1>Ivy Facade</h1>]]></doctitle>
+		    <bottom><![CDATA[<i>Copyright &#169; 2011 Procippus LLC. All Rights Reserved.</i>]]></bottom>
+		    <tag name="todo" scope="all" description="To do:"/>
+			<group title="Core" packages="com.procippus.ivy.*" />
+		    <group title="Model" packages="com.procippus.ivy.model*"/>
+		    <group title="Utilities" packages="com.procippus.ivy.util*"/>
+		  </javadoc>
+		
+		<jar destfile="${dist.dir}/IvyFacade-docs-${build.number}.jar">
+            <fileset dir="${docs.dir}" />
+        </jar>
 	</target>
 
 </project>
