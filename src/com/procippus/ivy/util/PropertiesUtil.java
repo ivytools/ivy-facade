@@ -92,6 +92,7 @@ public class PropertiesUtil {
 	public static final String KEY_FIL_IGNORE = "files.ignore";
 	public static final String KEY_IVY_PATTERNS = "files.ivy.patterns";
 	
+	public static final String KEY_GRAPHICS_MIME_TYPE = "graphics.mime.type";
 	public static final String KEY_GRAPHIC_WIDTH = "graphics.width";
 	public static final String KEY_GRAPHIC_HEIGHT = "graphics.height";
 	

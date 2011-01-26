@@ -184,11 +184,11 @@ limitations under the License.
 						
 						<div id="graph">
 							<xsl:param name="mimeType" select="//image/@mimeType" />
-							<xsl:param name="imgWidth" selecct="//image/@width" />
 							<xsl:param name="imgHeight" select="//image/@height" />
+							<xsl:param name="imgWidth" select="//image/@width" />
 							<xsl:param name="imgData" select="//image" />
 							<div style="text-align: center;">
-								<img src="data:{$mimeType};base64,{$imgData}" style="border: 1px solid #999;" alt="Module Graph" width="{$imgWidth}" height="{$imgHeight}"/> 
+								<img style="border: 1px solid #999;width={$imgWidth}px;height={$imgHeight}px;" alt="Module Graph" src="data:{$mimeType};base64,{$imgData}" /> 
 							</div>
 						</div>
 					</div>

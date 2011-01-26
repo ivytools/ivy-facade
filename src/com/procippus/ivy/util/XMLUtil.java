@@ -36,8 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.procippus.ivy.adapter.ModuleAdapter;
+import com.procippus.ivy.graphics.PieValue;
 import com.procippus.ivy.model.Module;
-import com.procippus.ivy.model.PieValue;
 
 /**
  * @author Procippus, LLC

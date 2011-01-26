@@ -32,9 +32,9 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.procippus.ivy.graphics.PieValue;
 import com.procippus.ivy.model.Dependency;
 import com.procippus.ivy.model.Module;
-import com.procippus.ivy.model.PieValue;
 
 /**
  * @author Procippus, LLC

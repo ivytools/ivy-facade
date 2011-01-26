@@ -1,4 +1,4 @@
-package com.procippus.ivy.model;
+package com.procippus.ivy.graphics;
 /*
  * 
  * Copyright 2011 Procippus, LLC

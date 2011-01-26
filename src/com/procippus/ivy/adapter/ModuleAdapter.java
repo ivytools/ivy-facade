@@ -79,10 +79,11 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 		
 		if (module.getBase64Image() != null) {
 			Element img = new Element(EL_IMAGE);
-			img.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue("graphics.mime.type")));
-			img.addAttribute(new Attribute("width", PropertiesUtil.getValue("graphics.width")));
-			img.addAttribute(new Attribute("height", PropertiesUtil.getValue("graphics.height")));
+			img.addAttribute(new Attribute("width", PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_WIDTH)));
+			img.addAttribute(new Attribute("height", PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_HEIGHT)));
+			img.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHICS_MIME_TYPE)));
 			img.appendChild(module.getBase64Image());
+			//System.out.println(img.toXML());
 			e.appendChild(img);
 		}
 		
