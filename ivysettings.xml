@@ -5,12 +5,17 @@
 	<property name="ivy.local.default.ivy.pattern" value="[organisation]/[module]/[revision]/ivy.xml" override="false" />
 	<property name="ivy.local.default.artifact.pattern"	value="[organisation]/[module]/[revision]/[artifact].[ext]" override="false" />
 	<resolvers>
-		<url name="intranet">
+		<url name="internet">
 			<ivy pattern="${loc.server}${ivy.local.default.ivy.pattern}" />
 			<artifact pattern="${loc.server}${ivy.local.default.artifact.pattern}" />
 		</url>
+		<filesystem name="buildServer">
+			<ivy pattern="/Library/WebServer/Documents/ivy/${ivy.local.default.ivy.pattern}" />
+            <artifact pattern="/Library/WebServer/Documents/ivy/${ivy.local.default.artifact.pattern}" />
+		</filesystem>
 		<chain name="myChain" returnFirst="true">
-			<resolver ref="intranet" />
+			<resolver ref="internet" />
+			<resolver ref="buildServer" />
 		</chain>
 	</resolvers>
 </ivysettings>
