@@ -117,9 +117,13 @@ public class Info implements Comparable<Info>, Serializable {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return organization + "/" + module + "/" + revision;
+	}
 	
 	@Override
 	public int compareTo(Info o) {
-		return this.module.compareTo(o.getModule());
+		return this.toString().compareTo(o.toString());
 	}
 }

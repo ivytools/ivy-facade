@@ -35,6 +35,7 @@ import nu.xom.xslt.XSLTransform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.procippus.ivy.IvyFacadeConstants;
 import com.procippus.ivy.adapter.ModuleAdapter;
 import com.procippus.ivy.graphics.PieValue;
 import com.procippus.ivy.model.Module;
@@ -196,7 +197,7 @@ public class XMLUtil {
 			ivyDoc = builder.build(ivy);
 			ivyFile = parseIvyFile(ivy, ivyDoc);
 		} catch (Exception e) {
-			logger.error(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivy.getPath()));
+			logger.error(PropertiesUtil.getValue(IvyFacadeConstants.KEY_ERR_FILE, ivy.getPath()));
 		}
 		return ivyFile;
 	}

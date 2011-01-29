@@ -79,22 +79,4 @@ public class PropertiesUtil {
 	public static String getValue(String key, Integer value) {
 		return getValue(key, value.toString());
 	}
-	
-	public static final String KEY_ERR_READ = "err.xsl.read";
-	public static final String KEY_ERR_FILE = "err.xml.file";
-	public static final String KEY_ERR_IO = "err.io";
-	
-	public static final String KEY_XSL_IVY = "default.xsl.ivy";
-	public static final String KEY_XSL_DIR = "default.xsl.dir";
-	public static final String KEY_XSL_HOME= "default.xsl.home";
-	public static final String KEY_XSL_COMMON = "default.xsl.common";
-	
-	public static final String KEY_FIL_IGNORE = "files.ignore";
-	public static final String KEY_IVY_PATTERNS = "files.ivy.patterns";
-	
-	public static final String KEY_GRAPHICS_MIME_TYPE = "graphics.mime.type";
-	public static final String KEY_GRAPHIC_WIDTH = "graphics.width";
-	public static final String KEY_GRAPHIC_HEIGHT = "graphics.height";
-	
-	public static final String KEY_HTML_DEFAULT = "default.html.file.name";
 }

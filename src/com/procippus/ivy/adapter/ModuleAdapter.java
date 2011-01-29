@@ -18,6 +18,7 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+import com.procippus.ivy.IvyFacadeConstants;
 import com.procippus.ivy.XMLAdapter;
 import com.procippus.ivy.model.Dependency;
 import com.procippus.ivy.model.Module;
@@ -33,17 +34,6 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 	private static DependencyListAdapter dependencyListAdapter = new DependencyListAdapter();
 	private static InfoAdapter infoAdapter = new InfoAdapter();
 	private static PublicationsAdapter publicationsAdapter = new PublicationsAdapter();
-	
-	public static final String EL_IVY_MOD = "ivy-module";
-	private static final String ATTR_MISSING_DEPS = "missingDependencies";
-	private static final String EL_IMAGE = "image";
-	
-	private static final String XSI ="xsi";
-	private static final String XSI_URL = "http://www.w3.org/2001/XMLSchema-instance";
-	private static final String ATTR_NO_NS = "xsi:noNamespaceSchemaLocation";
-	private static final String IVY_XSD = "http://incubator.apache.org/ivy/schemas/ivy.xsd";
-	private static final String ATTR_VERSION = "version";
-	private static final String VAL_VERSION_NUM = "1.3";
 	
 	@Override
 	public Module fromElement(Element e) {
@@ -62,12 +52,12 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 	
 	@Override
 	public Element toElement(Module module) {
-		Element e = new Element(EL_IVY_MOD);
-		e.addAttribute(new Attribute(ATTR_VERSION, VAL_VERSION_NUM));
-		e.addNamespaceDeclaration(XSI, XSI_URL);
-		e.addAttribute(new Attribute(ATTR_NO_NS, XSI_URL, IVY_XSD));
+		Element e = new Element(IvyFacadeConstants.EL_IVY_MOD);
+		e.addAttribute(new Attribute(IvyFacadeConstants.ATTR_VERSION, IvyFacadeConstants.VAL_VERSION_NUM));
+		e.addNamespaceDeclaration(IvyFacadeConstants.XSI, IvyFacadeConstants.XSI_URL);
+		e.addAttribute(new Attribute(IvyFacadeConstants.ATTR_NO_NS, IvyFacadeConstants.XSI_URL, IvyFacadeConstants.IVY_XSD));
 		
-		e.addAttribute(new Attribute(ATTR_MISSING_DEPS, module.isMissingDependencies().toString()));
+		e.addAttribute(new Attribute(IvyFacadeConstants.ATTR_MISSING_DEPS, module.isMissingDependencies().toString()));
 		
 		e.appendChild(infoAdapter.toElement(module.getInfo()));
 		
@@ -78,10 +68,10 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 		e.appendChild(dependentListAdapter.toElement(module.getDependentList()));
 		
 		if (module.getBase64Image() != null) {
-			Element img = new Element(EL_IMAGE);
-			img.addAttribute(new Attribute("width", PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_WIDTH)));
-			img.addAttribute(new Attribute("height", PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_HEIGHT)));
-			img.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHICS_MIME_TYPE)));
+			Element img = new Element(IvyFacadeConstants.EL_IMAGE);
+			img.addAttribute(new Attribute("width", PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_WIDTH)));
+			img.addAttribute(new Attribute("height", PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_HEIGHT)));
+			img.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHICS_MIME_TYPE)));
 			img.appendChild(module.getBase64Image());
 			//System.out.println(img.toXML());
 			e.appendChild(img);

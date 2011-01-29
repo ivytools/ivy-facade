@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import nu.xom.ParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.procippus.ivy.IvyFacadeConstants;
 import com.procippus.ivy.adapter.ModuleAdapter;
 import com.procippus.ivy.model.Module;
 
@@ -50,7 +52,7 @@ public class HTMLUtil {
 	
 	public static void init(File ivyRoot) {
 		HTMLUtil.ivyRoot = ivyRoot;
-		INDEX = PropertiesUtil.getValue(PropertiesUtil.KEY_HTML_DEFAULT);
+		INDEX = PropertiesUtil.getValue(IvyFacadeConstants.KEY_HTML_DEFAULT);
 	}
 	
 	private static void writeIndexFile(String path, String content) {
@@ -69,8 +71,8 @@ public class HTMLUtil {
 		Document stylesheet;
 		try {
 			//Create the image
-			int width = Integer.parseInt(PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_WIDTH));
-			int height = Integer.parseInt(PropertiesUtil.getValue(PropertiesUtil.KEY_GRAPHIC_HEIGHT));
+			int width = Integer.parseInt(PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_WIDTH));
+			int height = Integer.parseInt(PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_HEIGHT));
 			
 			BufferedImage bi = GraphicUtil.drawDependencyGraph(width, height, ivyFile);
 			ivyFile.setBase64Image(GraphicUtil.writeImageToBase64(bi));
@@ -84,14 +86,15 @@ public class HTMLUtil {
 			Document result = XMLUtil.transform(stylesheet, ivyDoc, null);
 			writeIndexFile(f.getParent() + File.separatorChar + INDEX, result.toXML());			
 		} catch (ParsingException ex) {
-			logger.error(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_FILE, ivyFile.getFilePath()));
+			logger.error(PropertiesUtil.getValue(IvyFacadeConstants.KEY_ERR_FILE, ivyFile.getFilePath()));
 		} catch (IOException ex) {
 			logger.error(ivyFile.getFilePath());
-			logger.error(PropertiesUtil.getValue(PropertiesUtil.KEY_ERR_IO), ex);
+			logger.error(PropertiesUtil.getValue(IvyFacadeConstants.KEY_ERR_IO), ex);
 		}
 	}
 	
 	public static void buildDirectoryHtml(File directory, List<File> directories) {
+		Collections.sort(directories);
 		String currentDirectoryPath = directory.getPath();
 		int modifier = (currentDirectoryPath.length() > ivyRoot.getPath().length()) ? 1 : 0;
 		currentDirectoryPath = currentDirectoryPath.substring(ivyRoot.getPath().length() + modifier);

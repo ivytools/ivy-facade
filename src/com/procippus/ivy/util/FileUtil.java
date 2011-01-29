@@ -17,6 +17,7 @@ package com.procippus.ivy.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.procippus.ivy.IvyFacadeConstants;
 import com.procippus.ivy.model.Dependency;
 import com.procippus.ivy.model.Info;
 import com.procippus.ivy.model.Module;
@@ -52,13 +54,13 @@ public class FileUtil {
 	private static final String COMMA = ",";
 	public static void init() {
 		ignoreDirectory = PropertiesUtil.getValue("files.ignore.directory");
-		ignoreFiles = PropertiesUtil.getValue(PropertiesUtil.KEY_FIL_IGNORE).split(COMMA);
-		ivyMatchPattern = PropertiesUtil.getValue(PropertiesUtil.KEY_IVY_PATTERNS);
+		ignoreFiles = PropertiesUtil.getValue(IvyFacadeConstants.KEY_FIL_IGNORE).split(COMMA);
+		ivyMatchPattern = PropertiesUtil.getValue(IvyFacadeConstants.KEY_IVY_PATTERNS);
 		
-		ivyStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(PropertiesUtil.KEY_XSL_IVY));
-		dirStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(PropertiesUtil.KEY_XSL_DIR));
-		homeStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(PropertiesUtil.KEY_XSL_HOME));
-		commonStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(PropertiesUtil.KEY_XSL_COMMON));
+		ivyStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(IvyFacadeConstants.KEY_XSL_IVY));
+		dirStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(IvyFacadeConstants.KEY_XSL_DIR));
+		homeStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(IvyFacadeConstants.KEY_XSL_HOME));
+		commonStylesheet = XMLUtil.prepareXSL(PropertiesUtil.getValue(IvyFacadeConstants.KEY_XSL_COMMON));
 	}
 	
 	public static boolean validateIvyRoot(String ivyRoot) {
@@ -153,6 +155,9 @@ public class FileUtil {
 				}
 			}
 		}
+		Collections.sort(missingDependencies);
+		Collections.sort(allMissingDependencies);
+		Collections.sort(modules);
 	}
 	
 	public static void writeIvyHtmlFiles() {

@@ -3,28 +3,14 @@ package com.procippus.ivy.graphics;
 import java.awt.Color;
 
 public class Bar {
-	int height;
-	int width;
-	int padding;
+	double heightPct;
 	Color color;
 	String label;
-	public int getHeight() {
-		return height;
+	public double getHeightPct() {
+		return heightPct;
 	}
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	public int getWidth() {
-		return width;
-	}
-	public void setWidth(int width) {
-		this.width = width;
-	}
-	public int getPadding() {
-		return padding;
-	}
-	public void setPadding(int padding) {
-		this.padding = padding;
+	public void setHeightPct(double heightPct) {
+		this.heightPct = heightPct;
 	}
 	public Color getColor() {
 		return color;
