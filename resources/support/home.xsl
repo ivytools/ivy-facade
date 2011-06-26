@@ -29,6 +29,7 @@
 					$(function(){
 						$('#tabs').tabs();
 						$('input#id_search').quicksearch('table#AllModules tbody tr');
+						return false;
 					});
  				</script>
 			</head>
@@ -79,7 +80,7 @@
 							</ul>
 						</div>
 						<div id="index">
-							<form action="#">
+							<form onsubmit="return false;">
 								Search: <input type="text" name="search" value="" id="id_search" placeholder="Search" />
 							</form>
 							<table id="AllModules" border="0" cellpadding="0" cellspacing="0">
