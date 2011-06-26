@@ -112,7 +112,7 @@ public class Dependency implements Comparable<Dependency>, Serializable {
 	
 	@Override
 	public int compareTo(Dependency o) {
-		return (o!=null) ? name.compareTo(o.name) : 0;
+		return (o!=null && o.name !=null && name!=null) ? name.compareTo(o.name) : 0;
 	}
 	
 	public String getPath() {
