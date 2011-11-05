@@ -70,6 +70,7 @@ public class HTMLUtil {
 		Document ivyDoc;
 		Document stylesheet;
 		try {
+			logger.debug("File: " + ivyFile.getFilePath());
 			//Create the image
 			int width = Integer.parseInt(PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_WIDTH));
 			int height = Integer.parseInt(PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_HEIGHT));
@@ -86,15 +87,22 @@ public class HTMLUtil {
 			Document result = XMLUtil.transform(stylesheet, ivyDoc, null);
 			writeIndexFile(f.getParent() + File.separatorChar + INDEX, result.toXML());			
 		} catch (ParsingException ex) {
+			logger.error(ivyFile.getFilePath());
 			logger.error(PropertiesUtil.getValue(IvyFacadeConstants.KEY_ERR_FILE, ivyFile.getFilePath()));
 		} catch (IOException ex) {
 			logger.error(ivyFile.getFilePath());
 			logger.error(PropertiesUtil.getValue(IvyFacadeConstants.KEY_ERR_IO), ex);
+		} catch (nu.xom.IllegalCharacterDataException icde) {
+			logger.error(ivyFile.getFilePath());
+			logger.error("Processing Error", icde);
+		} catch (Exception e) {
+			logger.error(ivyFile.getFilePath(), e);
 		}
 	}
 	
 	public static void buildDirectoryHtml(File directory, List<File> directories) {
-		Collections.sort(directories);
+		if (directories!=null)
+			Collections.sort(directories);
 		String currentDirectoryPath = directory.getPath();
 		int modifier = (currentDirectoryPath.length() > ivyRoot.getPath().length()) ? 1 : 0;
 		currentDirectoryPath = currentDirectoryPath.substring(ivyRoot.getPath().length() + modifier);
@@ -108,13 +116,19 @@ public class HTMLUtil {
 		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(FULL_PATH, currentDirectoryPath);
-		if (remainder != null && remainder.length > 0) {
-			if (remainder.length >= 1)
+		int rLen = remainder.length;
+		switch(rLen) {
+			case 1:
 				params.put(ORG, remainder[0]);
-			if (remainder.length >= 2)
+				break;
+			case 2:
 				params.put(MOD, remainder[1]);
-			if (remainder.length >= 3)
+				break;
+			case 3:
 				params.put(REV, remainder[2]);
+				break;
+			default:
+				logger.info("Processing Root: " + currentDirectoryPath);
 		}
 
 		Document directoriesAsXml = null; 

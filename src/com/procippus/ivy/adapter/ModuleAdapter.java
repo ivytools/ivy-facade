@@ -14,6 +14,7 @@ package com.procippus.ivy.adapter;
  * limitations under the License.
  */
 
+import static com.procippus.ivy.util.XMLUtil.setAttribute;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -35,11 +36,12 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 	private static InfoAdapter infoAdapter = new InfoAdapter();
 	private static PublicationsAdapter publicationsAdapter = new PublicationsAdapter();
 	
+	
 	@Override
 	public Module fromElement(Element e) {
 		Module module = new Module();
-		Elements eInfo = e.getChildElements("info");
-		Elements ePublications = e.getChildElements("publications");
+		Elements eInfo = e.getChildElements(InfoAdapter.EL_INFO);
+		Elements ePublications = e.getChildElements(PublicationsAdapter.EL_PUBLICATIONS);
 		Elements eDependencies = e.getChildElements(DependencyListAdapter.EL_DEPENDENCIES);
 		if (eInfo != null && eInfo.size()==1)
 			module.setInfo(infoAdapter.fromElement(eInfo.get(0)));
@@ -49,6 +51,10 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 			module.setDependencyList(dependencyListAdapter.fromElement(eDependencies.get(0)));
 		return module;
 	}
+	
+	static final String AT_W = "width";
+	static final String AT_H = "height";
+	static final String AT_MT = "mimeType";
 	
 	@Override
 	public Element toElement(Module module) {
@@ -69,11 +75,10 @@ public class ModuleAdapter implements XMLAdapter<Module> {
 		
 		if (module.getBase64Image() != null) {
 			Element img = new Element(IvyFacadeConstants.EL_IMAGE);
-			img.addAttribute(new Attribute("width", PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_WIDTH)));
-			img.addAttribute(new Attribute("height", PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_HEIGHT)));
-			img.addAttribute(new Attribute("mimeType", PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHICS_MIME_TYPE)));
+			setAttribute(img, AT_W, PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_WIDTH));
+			setAttribute(img,AT_H, PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHIC_HEIGHT));
+			setAttribute(img, AT_MT, PropertiesUtil.getValue(IvyFacadeConstants.KEY_GRAPHICS_MIME_TYPE));
 			img.appendChild(module.getBase64Image());
-			//System.out.println(img.toXML());
 			e.appendChild(img);
 		}
 		

@@ -17,6 +17,8 @@ package com.procippus.ivy.adapter;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import com.procippus.ivy.XMLAdapter;
 import com.procippus.ivy.model.Artifact;
 
@@ -32,21 +34,29 @@ public class ArtifactAdapter implements XMLAdapter<Artifact> {
 	
 	@Override
 	public Artifact fromElement(Element e) {
-		String name = e.getAttributeValue(ATTR_NAME);
-		String type = e.getAttributeValue(ATTR_TYPE);
-		String ext = e.getAttributeValue(ATTR_EXT);
+		String name = "", type="", ext="";
+		if (e.getAttribute(ATTR_NAME)!=null)
+			name = e.getAttributeValue(ATTR_NAME);
+		if (e.getAttribute(ATTR_TYPE)!=null)
+			type = e.getAttributeValue(ATTR_TYPE);
+		if (e.getAttribute(ATTR_EXT)!=null)
+			ext = e.getAttributeValue(ATTR_EXT);
 		return new Artifact(name, type, ext);
 	}
 	
 	@Override
 	public Element toElement(Artifact artifact) {
 		Element e = new Element(EL_ATTRIBUTE);
-			if (artifact.getName() != null)
-				e.addAttribute(new Attribute(ATTR_NAME, artifact.getName()));
-			if (artifact.getType() != null)
+		if (artifact != null) {
+		if (!isEmpty(artifact.getName()))
+			e.addAttribute(new Attribute(ATTR_NAME, artifact.getName()));
+		
+			if (isEmpty(artifact.getType())) artifact.setType("jar");
 				e.addAttribute(new Attribute(ATTR_TYPE, artifact.getType()));
-			if (artifact.getExt() != null)
+			
+			if (isEmpty(artifact.getExt())) artifact.setExt("jar");
 				e.addAttribute(new Attribute(ATTR_EXT, artifact.getExt()));
+		}
 		return e;
 	}
 }

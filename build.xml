@@ -2,6 +2,8 @@
 <project name="IvyFacade" xmlns:ivy="antlib:org.apache.ivy.ant">
     <echo message="${ant.home}"/>
     <property file="build.properties"/>
+	
+	<get src="http://ivy.procippus.com/ivysettings.xml" dest="ivysettings.xml" />
 
     <path id="libraries">
         <fileset dir="${ivy.lib.dir}">
@@ -30,11 +32,14 @@
                destdir="${compile.target}"
                fork="true"
                includeantruntime="false"
-               source="1.6"/>
+               source="1.6"
+        	   target="1.6"/>
         <copydir src="${resources.dir}" dest="${compile.target}" />
     </target>
 
+	<!--
 	<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload"/>
+	-->
 	
     <target name="dist" depends="compile">
     	
@@ -43,11 +48,11 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="com.procippus.ivy.HtmlBuilder"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar commons-codec-1.4.0.jar slf4j-api-1.6.1.jar slf4j-simple-1.6.1.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ xom-1.2.6.jar commons-codec-1.4.0.jar slf4j-api-1.6.1.jar slf4j-simple-1.6.1.jar commons-lang-2.5.0.jar"/>
             </manifest>
             <zipfileset src="${ivy.lib.dir}/jar-in-jar-loader-1.3.0.zip"/>
             <fileset dir="${compile.target}"/>
-            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar,commons-codec-1.4.0.jar,slf4j-api-1.6.1.jar,slf4j-simple-1.6.1.jar"/>
+            <zipfileset dir="${ivy.lib.dir}" includes="xom-1.2.6.jar,commons-codec-1.4.0.jar,slf4j-api-1.6.1.jar,slf4j-simple-1.6.1.jar commons-lang-2.5.0.jar"/>
         </jar>
 
         <jar destfile="${dist.dir}/IvyFacade-sources-${build.number}.jar">
@@ -59,17 +64,6 @@
     	<copy file="resources/notice.txt" tofile="${dist.dir}/IvyFacade-notice-${build.number}.txt" />
     	
     	<antcall target="docs" inheritall="true" />
-    	
-    	<!--
-    	<gcupload 
-    	        username="${gc.username}" 
-    	        password="${gc.password}" 
-    	        projectname="ivy-facade" 
-    	        filename="${dist.dir}/IvyFacade-1.0.${build.number}.jar" 
-    	        targetfilename="IvyFacade-1.0.${build.number}.jar"
-    	        summary="Version 1.0.${build.number} of Ivy Facade"
-    	        labels="Featured, Type-Package, OpSys-All" /> -->
-    	
     	
     </target>
 	

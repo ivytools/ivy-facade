@@ -14,7 +14,8 @@ package com.procippus.ivy.adapter;
  * limitations under the License.
  */
 
-import nu.xom.Attribute;
+import static com.procippus.ivy.util.XMLUtil.getAttributeValue;
+import static com.procippus.ivy.util.XMLUtil.setAttribute;
 import nu.xom.Element;
 
 import com.procippus.ivy.XMLAdapter;
@@ -31,16 +32,16 @@ public class LicenseAdapter implements XMLAdapter<License> {
 	@Override
 	public License fromElement(Element e) {
 		License license = new License();
-		license.setName(e.getAttributeValue(ATTR_NAME));
-		license.setUrl(e.getAttributeValue(ATTR_URL));
+		license.setName(getAttributeValue(e, ATTR_NAME));
+		license.setUrl(getAttributeValue(e, ATTR_URL));
 		return license;
 	}
 	
 	@Override
 	public Element toElement(License license) {
 		Element e = new Element(EL_LICENSE);
-		e.addAttribute(new Attribute(ATTR_NAME, license.getName()));
-		e.addAttribute(new Attribute(ATTR_URL, license.getUrl()));
+		setAttribute(e, ATTR_NAME, license.getName());
+		setAttribute(e, ATTR_URL, license.getUrl());
 		return e;
 	}
 }

@@ -14,7 +14,8 @@ package com.procippus.ivy.adapter;
  * limitations under the License.
  */
 
-import nu.xom.Attribute;
+import static com.procippus.ivy.util.XMLUtil.getAttributeValue;
+import static com.procippus.ivy.util.XMLUtil.setAttribute;
 import nu.xom.Element;
 import nu.xom.Elements;
 
@@ -40,11 +41,11 @@ public class InfoAdapter implements XMLAdapter<Info> {
 	public Info fromElement(Element e) {
 		Info info = new Info();
 		
-		info.setOrganization(e.getAttributeValue(ATTR_ORG));
-		info.setModule(e.getAttributeValue(ATTR_MOD));
-		info.setRevision(e.getAttributeValue(ATTR_REV));
-		info.setStatus(e.getAttributeValue(ATTR_STAT));
-		info.setPublication(e.getAttributeValue(ATTR_PUB));
+		info.setOrganization(getAttributeValue(e,ATTR_ORG));
+		info.setModule(getAttributeValue(e,ATTR_MOD));
+		info.setRevision(getAttributeValue(e,ATTR_REV));
+		info.setStatus(getAttributeValue(e,ATTR_STAT));
+		info.setPublication(getAttributeValue(e,ATTR_PUB));
 		
 		Elements desElements = e.getChildElements(EL_DESCRIPTION);
 		if (desElements.size()==1) {
@@ -62,19 +63,22 @@ public class InfoAdapter implements XMLAdapter<Info> {
 	@Override
 	public Element toElement(Info info) {
 		Element root = new Element(EL_INFO);
-			root.addAttribute(new Attribute(ATTR_ORG, info.getOrganization()));
-			root.addAttribute(new Attribute(ATTR_MOD, info.getModule()));
-			root.addAttribute(new Attribute(ATTR_REV, info.getRevision()));
-			root.addAttribute(new Attribute(ATTR_STAT, info.getStatus()));
-			root.addAttribute(new Attribute(ATTR_PUB, info.getPublication()));
+		
+		if (info != null) {
+			setAttribute(root, ATTR_ORG, info.getOrganization());
+			setAttribute(root, ATTR_MOD, info.getModule());
+			setAttribute(root, ATTR_REV, info.getRevision());
+			setAttribute(root, ATTR_STAT, info.getStatus());
+			setAttribute(root, ATTR_PUB, info.getPublication());
 			
-		if (info.getDescription() != null) {
-			Element elDescription = new Element(EL_DESCRIPTION);
-			elDescription.appendChild(info.getDescription());
-			root.appendChild(elDescription);
-		}
-		if (info.getLicense() != null && info.getLicense().isValid()) {
-			root.appendChild(licenseAdapter.toElement(info.getLicense()));
+			if (info.getDescription() != null) {
+				Element elDescription = new Element(EL_DESCRIPTION);
+				elDescription.appendChild(info.getDescription());
+				root.appendChild(elDescription);
+			}
+			if (info.getLicense() != null && info.getLicense().isValid()) {
+				root.appendChild(licenseAdapter.toElement(info.getLicense()));
+			}
 		}
 		return root;
 	}

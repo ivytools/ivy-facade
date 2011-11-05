@@ -1,21 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ivysettings>
-	<settings defaultResolver="myChain" />
-	<property name="loc.server" value="http://ivy.procippus.com/" />
-	<property name="ivy.local.default.ivy.pattern" value="[organisation]/[module]/[revision]/ivy.xml" override="false" />
-	<property name="ivy.local.default.artifact.pattern"	value="[organisation]/[module]/[revision]/[artifact].[ext]" override="false" />
+	<settings defaultResolver="localChain" />
+	
+	<property name="ivy.local.default.root"
+              value="http://ivy.procippus.com/"
+              override="false" />
+
+	<property name="ivy.local.default.ivy.pattern"
+		  value="[organisation]/[module]/[revision]/[artifact].[ext]"
+		  override="false" />
+
+	<property name="ivy.local.default.artifact.pattern"
+		  value="[organisation]/[module]/[revision]/[artifact].[ext]"
+		  override="false" />
+
 	<resolvers>
-		<url name="internet">
-			<ivy pattern="${loc.server}${ivy.local.default.ivy.pattern}" />
-			<artifact pattern="${loc.server}${ivy.local.default.artifact.pattern}" />
+		<url name="public">
+			<ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
+			<artifact pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
 		</url>
-		<filesystem name="buildServer">
-			<ivy pattern="/Library/WebServer/Documents/ivy/${ivy.local.default.ivy.pattern}" />
-            <artifact pattern="/Library/WebServer/Documents/ivy/${ivy.local.default.artifact.pattern}" />
-		</filesystem>
-		<chain name="myChain" returnFirst="true">
-			<resolver ref="internet" />
-			<resolver ref="buildServer" />
+
+		<chain name="localChain" returnFirst="true">
+			<resolver ref="public" />
 		</chain>
 	</resolvers>
 </ivysettings>

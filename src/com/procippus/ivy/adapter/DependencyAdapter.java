@@ -14,7 +14,8 @@ package com.procippus.ivy.adapter;
  * limitations under the License.
  */
 
-import nu.xom.Attribute;
+import static com.procippus.ivy.util.XMLUtil.getAttributeValue;
+import static com.procippus.ivy.util.XMLUtil.setAttribute;
 import nu.xom.Element;
 
 import com.procippus.ivy.XMLAdapter;
@@ -34,21 +35,23 @@ public class DependencyAdapter implements XMLAdapter<Dependency> {
 	@Override
 	public Dependency fromElement(Element e) {
 		Dependency dep = new Dependency();
-		dep.setName(e.getAttributeValue(ATTR_NAME));
-		dep.setOrg(e.getAttributeValue(ATTR_ORG));
-		dep.setRev(e.getAttributeValue(ATTR_REV));
+		dep.setName(getAttributeValue(e, ATTR_NAME));
+		dep.setOrg(getAttributeValue(e, ATTR_ORG));
+		dep.setRev(getAttributeValue(e, ATTR_REV));
 		return dep;
 	}
 	
 	@Override
 	public Element toElement(Dependency d) {
 		Element root = new Element(EL_DEPENDENCY);
-			root.addAttribute(new Attribute(ATTR_ORG, d.getOrg()));
-			root.addAttribute(new Attribute(ATTR_NAME, d.getName()));
-			root.addAttribute(new Attribute(ATTR_REV, d.getRev()));
+		if (d!=null) {
+			setAttribute(root, ATTR_ORG,  d.getOrg());
+			setAttribute(root, ATTR_NAME,  d.getName());
+			setAttribute(root, ATTR_REV,  d.getRev());
 			if (d.getMissing()==Boolean.TRUE) {
-				root.addAttribute(new Attribute(ATTR_MISSING, d.getMissing().toString()));
+				setAttribute(root, ATTR_MISSING, d.getMissing().toString());
 			}
+		}
 		return root;
 	}
 }

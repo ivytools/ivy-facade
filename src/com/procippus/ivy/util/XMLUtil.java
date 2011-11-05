@@ -40,6 +40,8 @@ import com.procippus.ivy.adapter.ModuleAdapter;
 import com.procippus.ivy.graphics.PieValue;
 import com.procippus.ivy.model.Module;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 /**
  * @author Procippus, LLC
  * @author Ryan McGuinness  <i>[ryan@procippus.com]</i>
@@ -210,5 +212,21 @@ public class XMLUtil {
 		
 		Document doc = new Document(root);
 		return doc;
+	}
+	
+	public static void setAttribute(Element root, String attrName, String attrVal) {
+		Attribute attr = null;
+		if (root != null && !isEmpty(attrName) && !isEmpty(attrVal)) {
+			attr = new Attribute(attrName, attrVal);
+			root.addAttribute(attr);
+		}
+	}
+	public static String getAttributeValue(Element root, String attrName) {
+		String out = "";
+		if (root != null && !isEmpty(attrName)) {
+			if (root.getAttribute(attrName)!= null)
+				out = root.getAttributeValue(attrName);
+		}
+		return out;
 	}
 }
