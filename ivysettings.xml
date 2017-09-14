@@ -1,26 +1,24 @@
 <ivysettings>
-	<settings defaultResolver="localChain" />
-	
-	<property name="ivy.local.default.root"
-              value="http://ivy.procippus.com/"
-              override="false" />
-
-	<property name="ivy.local.default.ivy.pattern"
-		  value="[organisation]/[module]/[revision]/[artifact].[ext]"
-		  override="false" />
-
-	<property name="ivy.local.default.artifact.pattern"
-		  value="[organisation]/[module]/[revision]/[artifact].[ext]"
-		  override="false" />
-
-	<resolvers>
-		<url name="public">
-			<ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
-			<artifact pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
-		</url>
-
-		<chain name="localChain" returnFirst="true">
-			<resolver ref="public" />
-		</chain>
-	</resolvers>
+  <property name="central.repo" value="http://repo1.maven.org/maven2" override="false"/>
+  <settings defaultResolver="localChain"/>
+  <caches defaultCacheDir="${user.home}/.ivy2/cache"
+          artifactPattern="[organisation]/[module]/[type]s/[artifact]-[revision](-[classifier]).[ext]"/>
+  <resolvers>
+    <filesystem name="local">
+      <ivy pattern="${ivy.cache.dir}/[module]/ivy-[revision].xml"/>
+      <artifact pattern="${ivy.cache.dir}/[module]/[artifact]-[revision](-[classifier]).[ext]"/>
+    </filesystem>
+    <ibiblio name="central" m2compatible="true" usepoms="false" root="${central.repo}"
+             pattern="[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+    <!--
+	<bintray name="raiser" subject="raisercostin" repo="maven"/>
+    -->
+    <chain name="localChain" returnFirst="true">
+      <resolver ref="local"/>
+      <resolver ref="central"/>
+      <!--
+	  <resolver ref="raiser"/>
+      -->
+    </chain>
+  </resolvers>
 </ivysettings>
